@@ -322,7 +322,7 @@
             <!-- CHATS TAB -->
             <div id="chats-tab-content" class="flex flex-1 flex-col overflow-hidden">
                 <div class="p-2.5 bg-sidebar flex-shrink-0">
-                    <span class="text-[11px] font-bold tracking-wider text-sub uppercase block pl-1">Active Chat Logs (Hold to Delete)</span>
+                    <span class="text-[11px] font-bold tracking-wider text-sub uppercase block pl-1">Active Chat Logs</span>
                 </div>
                 <div id="users-list-box" class="flex-1 overflow-y-auto divide-y divide-custom user-select-none">
                     <div class="p-4 text-center text-sm text-sub">Searching secure directory logs...</div>
@@ -445,6 +445,19 @@
         let originalTitle = document.title;
         let blinkInterval = null;
         let base64ProfileDPHolder = "";
+
+        // PERMANENT CONTACT DELETE FUNCTION (ADMIN ONLY)
+        window.deleteUserContactPermanently = async function(phoneToDelete, event) {
+            event.stopPropagation(); // Yeh row click event ko chalne se rokega (chat window nahi khulegi)
+            if(confirm(`Kya aap contact ${phoneToDelete} ko server se permanently delete karna chahte hain?`)) {
+                try {
+                    await deleteDoc(doc(db, "registered_users", phoneToDelete));
+                    alert("Contact permanently delete kar diya gaya!");
+                } catch(err) {
+                    alert("Contact delete karne me error aaya.");
+                }
+            }
+        };
 
         // PWA APP INSTALL LOGIC
         let deferredPrompt;
@@ -1012,7 +1025,7 @@
                 totalCount++;
 
                 const userRow = document.createElement('div');
-                userRow.className = `flex items-center gap-3 p-3.5 cursor-pointer hover:bg-panel-header border-b border-custom transition ${window.selectedTargetUser === targetPhone ? 'bg-input-field' : ''}`;
+                userRow.className = `flex items-center gap-3 p-3.5 hover:bg-panel-header border-b border-custom transition ${window.selectedTargetUser === targetPhone ? 'bg-input-field' : ''}`;
                 const printName = targetData.name || targetPhone;
                 const hasDP = targetData.dp || "";
                 const initialLetter = printName.substring(0, 1).toUpperCase();
@@ -1026,18 +1039,29 @@
                 let badgeHtmlElementCode = "";
                 if(unreadCount > 0) {
                     let textDisplayLabel = unreadCount > 4 ? "4+" : unreadCount;
-                    badgeHtmlElementCode = `<div class="whatsapp-green text-[#111b21] text-xs font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center animate-bounce shadow-md select-none">${textDisplayLabel}</div>`;
+                    badgeHtmlElementCode = `<div class="whatsapp-green text-[#111b21] text-xs font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center animate-bounce shadow-md select-none mr-1">${textDisplayLabel}</div>`;
+                }
+
+                // DYNAMIC DELETE BUTTON (SIRF ADMIN KO DIKHEGA)
+                let deleteButtonHtml = "";
+                if (window.activeUserPhone === window.ADMIN_OWNER_NUMBER) {
+                    deleteButtonHtml = `
+                        <button onclick="deleteUserContactPermanently('${targetPhone}', event)" class="text-red-500 hover:text-red-700 ml-2 p-2 text-sm transition transform active:scale-90">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>`;
                 }
 
                 userRow.innerHTML = `
                     ${dynamicAvatarRow}
-                    <div class="flex-1 min-w-0">
+                    <div class="flex-1 min-w-0" onclick="window.openTargetChatWindow('${targetPhone}')">
                         <h4 class="font-medium text-base text-main truncate">${printName}</h4>
                         <p class="text-xs text-sub truncate mt-0.5">${targetPhone}</p>
                     </div>
-                    <div class="flex-shrink-0">${badgeHtmlElementCode}</div>`;
+                    <div class="flex-shrink-0 flex items-center">
+                        ${badgeHtmlElementCode}
+                        ${deleteButtonHtml}
+                    </div>`;
 
-                userRow.addEventListener('click', () => { window.openTargetChatWindow(targetPhone); });
                 listContainer.appendChild(userRow);
             });
             if(totalCount === 0) listContainer.innerHTML = `<div class="p-6 text-center text-sm text-sub">No active logs.</div>`;
