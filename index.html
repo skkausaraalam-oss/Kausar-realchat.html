@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kausar Private Hub</title>
+    <!-- PWA Connection Line -->
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <link class="ui-styles" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,7 +22,7 @@
         body.dark-mode .text-sub { color: #8696a0; }
         body.dark-mode .chat-bubble-recv { background-color: #202c33; color: #e9edef; }
         body.dark-mode .dropdown-bg { background-color: #233138; border-color: #374248; }
-        body.dark-mode .dropdown-hover:hover { background-color: #182229; }
+        body.dark-mode .dropdown-hover:hover { background-color: #182226; }
 
         body.day-mode { background-color: #efeae2; color: #111b21; font-family: Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif; }
         body.day-mode .bg-panel-header { background-color: #f0f2f5; }
@@ -67,1000 +69,445 @@
         .whatsapp-green { background-color: #00a884; }
         
         /* WALLPAPER LAYER OVERLAY */
-        .chat-bg { 
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
-            opacity: 0.06; 
-            position: absolute; 
-            inset: 0; 
+        .chat-bg {
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            opacity: 0.06;
+            position: absolute;
+            inset: 0;
             z-index: 0;
             background-size: auto;
             background-repeat: repeat;
         }
-        
+
         .custom-wallpaper-active .chat-bg {
-            opacity: 1 !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
+            background-image: var(--custom-wp);
+            opacity: 0.15;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background-color: #374248; border-radius: 3px; }
-        .dynamic-height { height: 100vh; height: -webkit-fill-available; }
-        .user-select-none { -webkit-user-select: none; user-select: none; }
-        .status-ring { border: 2px dashed #00a884; padding: 2px; }
+        /* Hide Scrollbars */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="dark-mode dynamic-height flex items-center justify-center overflow-hidden fixed inset-0">
+<body class="dark-mode h-screen w-screen overflow-hidden flex items-center justify-center bg-gray-900">
 
-    <!-- LOG IN CONTAINER -->
-    <div id="auth-container" class="w-full max-w-md p-6 bg-[#222e35] rounded-lg shadow-2xl border border-[#374248] z-10 m-4">
-        <div class="text-center mb-6">
-            <div class="w-16 h-16 whatsapp-green text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg">
-                <i class="fa-solid fa-user-shield"></i>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#111b21] px-6">
+        <div class="w-full max-w-md text-center">
+            <div class="whatsapp-green w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg animate-bounce">
+                <i class="fa-solid fa-shield-halved text-white text-4xl"></i>
             </div>
-            <h2 class="text-2xl font-bold text-white">Kausar Private Hub</h2>
-            <p class="text-sm text-[#8696a0] mt-1">Private Encrypted Chat System</p>
-        </div>
-
-        <div id="phone-stage">
-            <label class="block text-xs font-semibold uppercase tracking-wider text-[#00a884] mb-2">Your Phone Number</label>
-            <div class="flex gap-2 mb-4">
-                <span class="bg-[#2a3942] border border-[#374248] text-white px-3 py-3 rounded text-base flex items-center">+91</span>
-                <input type="tel" id="phone-number" placeholder="Enter 10 digit number" class="w-full bg-[#2a3942] border border-[#374248] text-white px-4 py-3 rounded text-base focus:outline-none focus:border-[#00a884] transition">
-            </div>
-            <button id="btn-phone-next" class="w-full whatsapp-green hover:bg-[#008f72] text-[#111b21] font-bold py-3 px-4 rounded text-base transition duration-200 shadow-md">
-                Next <i class="fa-solid fa-arrow-right ml-1 text-sm"></i>
-            </button>
-        </div>
-
-        <div id="otp-stage" class="hidden">
-            <label class="block text-xs font-semibold uppercase tracking-wider text-[#00a884] mb-2">6-Digit Security PIN</label>
-            <input type="password" id="otp-code" placeholder="Enter Security PIN" maxlength="6" class="w-full bg-[#2a3942] border border-[#374248] text-white px-4 py-3 rounded text-base text-center tracking-widest focus:outline-none focus:border-[#00a884] transition mb-4">
-            <button id="btn-verify-pin" class="w-full bg-[#00a884] hover:bg-[#008f72] text-[#111b21] font-bold py-3 px-4 rounded text-base transition duration-200 shadow-md">
-                Verify & Login <i class="fa-solid fa-circle-check ml-1 text-sm"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- PROFILE SETUP POPUP -->
-    <div id="profile-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-        <div class="bg-[#222e35] border border-[#374248] w-full max-w-sm rounded-xl p-6 shadow-2xl">
-            <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-user-gear text-[#00a884]"></i> Set Up Your Profile
-            </h3>
-            <p class="text-xs text-[#8696a0] mb-4">This name will be visible to your chat partners.</p>
-            <input type="text" id="profile-name-input" placeholder="Enter Your Name" class="w-full bg-[#2a3942] border border-[#374248] text-white px-4 py-3 rounded-lg text-base focus:outline-none focus:border-[#00a884] transition mb-4">
-            <button id="btn-save-profile" class="w-full whatsapp-green hover:bg-[#008f72] text-[#111b21] font-bold py-3 rounded-lg transition shadow-md">
-                Save & Open Chats
-            </button>
-        </div>
-    </div>
-
-    <!-- EDIT PROFILE & ADVANCED THEME MODAL -->
-    <div id="edit-profile-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div class="bg-[#222e35] border border-[#374248] w-full max-w-md rounded-xl p-6 shadow-2xl relative text-white max-h-[90vh] overflow-y-auto">
-            <button id="btn-close-profile-modal" class="absolute top-4 right-4 text-[#8696a0] hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-sliders text-[#00a884]"></i> Settings & Customization
-            </h3>
+            <h1 class="text-white text-3xl font-bold mb-2 tracking-wide">Kausar Private Hub</h1>
+            <p class="text-[#8696a0] text-sm mb-8">Enter your secure verification credentials to enter the node.</p>
             
-            <!-- AVATAR UPLOAD -->
-            <div class="flex flex-col items-center gap-2 mb-4">
-                <div class="relative group cursor-pointer" id="dp-upload-trigger">
-                    <div id="modal-dp-preview" class="w-20 h-20 rounded-full bg-[#111b21] border-2 border-[#00a884] overflow-hidden flex items-center justify-center text-2xl font-bold text-[#00a884] uppercase bg-cover bg-center">
-                        ?
-                    </div>
-                    <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
-                        <i class="fa-solid fa-camera text-white text-lg"></i>
-                    </div>
-                </div>
-                <input type="file" id="profile-dp-file-input" accept="image/*" class="hidden">
-                <span class="text-xs text-[#8696a0]">Tap to change profile avatar</span>
-            </div>
-
-            <!-- NAME INPUT -->
-            <div class="mb-4">
-                <label class="block text-xs font-semibold text-[#8696a0] mb-1.5 uppercase tracking-wide">Display Name</label>
-                <input type="text" id="edit-profile-name-input" class="w-full bg-[#2a3942] border border-[#374248] text-white px-4 py-2 rounded-lg text-base focus:outline-none focus:border-[#00a884] transition">
-            </div>
-
-            <hr class="border-[#374248] my-4">
-
-            <!-- APP COLOR THEMES -->
-            <div class="mb-4">
-                <label class="block text-xs font-semibold text-[#8696a0] mb-2 uppercase tracking-wide">Select App Interface Theme</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <button class="theme-select-btn bg-[#111b21] text-xs font-medium py-2 px-3 rounded-lg border border-gray-600 text-left flex items-center gap-2" data-theme="dark-mode">
-                        <span class="w-3 h-3 rounded-full bg-[#222e35] inline-block border"></span> Original Dark
-                    </button>
-                    <button class="theme-select-btn bg-[#f0f2f5] text-slate-800 text-xs font-medium py-2 px-3 rounded-lg border border-gray-300 text-left flex items-center gap-2" data-theme="day-mode">
-                        <span class="w-3 h-3 rounded-full bg-[#ffffff] inline-block border"></span> Premium White
-                    </button>
-                    <button class="theme-select-btn bg-[#0f172a] text-xs font-medium py-2 px-3 rounded-lg border border-blue-900 text-left flex items-center gap-2" data-theme="blue-mode">
-                        <span class="w-3 h-3 rounded-full bg-[#1e293b] inline-block border"></span> Royal Blue
-                    </button>
-                    <button class="theme-select-btn bg-[#052e16] text-xs font-medium py-2 px-3 rounded-lg border border-green-900 text-left flex items-center gap-2" data-theme="green-mode">
-                        <span class="w-3 h-3 rounded-full bg-[#14532d] inline-block border"></span> WhatsApp Green
-                    </button>
-                </div>
-            </div>
-
-            <!-- GALLERY CUSTOM WALLPAPER -->
-            <div class="mb-5 bg-[#2a3942]/50 p-3 rounded-lg border border-[#374248]">
-                <label class="block text-xs font-semibold text-[#8696a0] mb-1 uppercase tracking-wide">Chat Box Wallpaper (From Gallery)</label>
-                <p class="text-[11px] text-[#8696a0] mb-2.5">Apne gallery se koi bhi photo lagayein chat background me.</p>
-                
-                <div class="flex gap-2">
-                    <input type="file" id="custom-wallpaper-input" accept="image/*" class="hidden">
-                    <button id="btn-trigger-wallpaper" class="flex-1 bg-[#374248] hover:bg-[#4f5d64] text-white text-xs font-bold py-2 px-3 rounded-lg transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-images text-[#00a884]"></i> Choose From Gallery
-                    </button>
-                    <button id="btn-remove-wallpaper" class="bg-red-950 hover:bg-red-900 text-red-200 text-xs font-bold py-2 px-3 rounded-lg transition hidden">
-                        <i class="fa-solid fa-trash-can"></i> Reset
-                    </button>
-                </div>
-            </div>
-
-            <button id="btn-update-profile" class="w-full whatsapp-green hover:bg-[#008f72] text-[#111b21] font-bold py-2.5 rounded-lg transition shadow-md flex items-center justify-center gap-2">
-                <i class="fa-solid fa-floppy-disk"></i> Save All Changes
-            </button>
-        </div>
-    </div>
-
-    <!-- STATUS VIEWER OVERLAY -->
-    <div id="status-viewer-modal" class="hidden fixed inset-0 bg-black z-50 flex flex-col justify-between">
-        <div class="absolute top-2 left-2 right-2 flex gap-1 z-20">
-            <div id="status-progress-bar" class="h-1 bg-[#00a884] w-0 transition-all duration-[5000ms] linear rounded"></div>
-        </div>
-        <div class="flex items-center justify-between text-white z-10 w-full bg-gradient-to-b from-black/80 to-transparent p-4 absolute top-0 left-0 pt-5">
-            <div class="flex items-center gap-3">
-                <div id="viewer-status-avatar" class="w-10 h-10 rounded-full bg-[#00a884] bg-cover bg-center border border-gray-600"></div>
+            <div class="bg-[#202c33] p-6 rounded-2xl border border-[#2a3942] shadow-2xl text-left space-y-4">
                 <div>
-                    <h4 id="viewer-status-username" class="font-bold text-sm">Username</h4>
-                    <p id="viewer-status-time" class="text-xs text-gray-300">Active Log</p>
+                    <label class="block text-xs font-semibold text-[#00a884] uppercase tracking-wider mb-2">Access Key ID</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-4 top-3.5 text-[#8696a0]"></i>
+                        <input id="login-key" type="text" placeholder="e.g., KAUSAR-99X" class="w-full bg-[#2a3942] text-white pl-11 pr-4 py-3 rounded-xl border border-transparent focus:border-[#00a884] outline-none text-sm font-mono tracking-widest transition-all">
+                    </div>
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold text-[#00a884] uppercase tracking-wider mb-2">Passcode</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-4 top-3.5 text-[#8696a0]"></i>
+                        <input id="login-pass" type="password" placeholder="••••••••" class="w-full bg-[#2a3942] text-white pl-11 pr-4 py-3 rounded-xl border border-transparent focus:border-[#00a884] outline-none text-sm tracking-widest transition-all">
+                    </div>
+                </div>
+                <button id="btn-login" class="w-full whatsapp-green hover:bg-[#008f6f] text-white font-bold py-3.5 rounded-xl mt-4 shadow-md transition-all flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-unlock-keyhole"></i> Verify & Authenticate
+                </button>
+                <p id="login-error" class="text-red-400 text-xs text-center font-medium hidden animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i> Access Denied. Invalid Sign-in Parameters.</p>
             </div>
-            <button id="btn-close-status-viewer" class="text-white text-2xl p-2 hover:text-gray-300 transition">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
         </div>
-
-        <div id="status-media-content-holder" class="w-full h-full flex items-center justify-center p-2 bg-black select-none"></div>
     </div>
 
-    <!-- MAIN INTERFACE -->
-    <div id="chat-container" class="hidden w-full h-full flex z-10 overflow-hidden">
+    <!-- MAIN APP WRAPPER -->
+    <div class="w-full h-full flex overflow-hidden relative">
         
         <!-- SIDEBAR PANEL -->
-        <div id="sidebar-panel" class="w-full md:w-[35%] bg-sidebar border-r border-custom flex flex-col h-full z-20">
-            <div class="bg-panel-header h-[60px] p-4 flex items-center justify-between shadow-sm flex-shrink-0">
-                <div class="flex items-center gap-3 cursor-pointer p-1 rounded hover:bg-input-field transition" id="my-profile-header-trigger">
-                    <div class="w-10 h-10 rounded-full bg-[#00a884] text-[#111b21] font-bold flex items-center justify-center text-lg uppercase shadow bg-cover bg-center" id="user-avatar">?</div>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-sm text-main flex items-center gap-1" id="user-display-name">
-                            Loading... <i class="fa-solid fa-gear text-[10px] text-sub"></i>
-                        </span>
-                        <span class="text-[11px] text-sub" id="user-phone">Loading...</span>
-                    </div>
-                </div>
-                <button id="btn-logout" class="text-sub hover:text-[#ea0038] text-lg transition p-2">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
-            </div>
-
-            <!-- TABS -->
-            <div class="flex bg-panel-header border-b border-custom text-center text-sm font-semibold select-none flex-shrink-0">
-                <button id="tab-chats-btn" class="flex-1 py-3 text-[#00a884] border-b-2 border-[#00a884] uppercase tracking-wide transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-message"></i> Chats
-                </button>
-                <button id="tab-status-btn" class="flex-1 py-3 text-sub border-b-2 border-transparent uppercase tracking-wide transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-circle-notch"></i> Status
-                </button>
-            </div>
-            
-            <!-- CHATS TAB -->
-            <div id="chats-tab-content" class="flex flex-1 flex-col overflow-hidden">
-                <div class="p-2.5 bg-sidebar flex-shrink-0">
-                    <span class="text-[11px] font-bold tracking-wider text-sub uppercase block pl-1">Active Chat Logs (Hold to Delete)</span>
-                </div>
-                <div id="users-list-box" class="flex-1 overflow-y-auto divide-y divide-custom user-select-none">
-                    <div class="p-4 text-center text-sm text-sub">Searching secure directory logs...</div>
-                </div>
-            </div>
-
-            <!-- STATUS TAB -->
-            <div id="status-tab-content" class="hidden flex-1 flex-col overflow-hidden">
-                <div class="p-4 flex items-center justify-between border-b border-custom bg-panel-header/30">
-                    <div class="flex items-center gap-3">
-                        <div id="my-status-avatar-preview" class="w-12 h-12 rounded-full bg-gray-500 bg-cover bg-center flex items-center justify-center text-white text-lg font-bold uppercase">?</div>
-                        <div>
-                            <h4 class="font-bold text-main text-sm">My Status</h4>
-                            <p class="text-xs text-sub">Supports up to 10MB Photos!</p>
-                        </div>
+        <div id="sidebar-panel" class="w-full md:w-[30%] h-full bg-sidebar flex flex-col border-r border-custom z-20 transition-all duration-300">
+            <!-- Header -->
+            <div class="bg-panel-header h-16 flex items-center justify-between px-4 shrink-0 border-b border-custom">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-green-600 flex items-center justify-center text-white font-bold text-lg shadow-inner shadow-black/30">
+                        K
                     </div>
                     <div>
-                        <input type="file" id="status-media-file-input" accept="image/*,video/mp4" class="hidden">
-                        <button id="btn-trigger-status-upload" class="w-10 h-10 whatsapp-green text-[#111b21] rounded-full flex items-center justify-center text-lg shadow hover:opacity-90 transform active:scale-95 transition">
-                            <i class="fa-solid fa-plus"></i>
+                        <h2 class="text-main font-semibold text-sm leading-tight tracking-wide">Secure Core</h2>
+                        <span class="text-emerald-400 text-[10px] font-mono font-bold uppercase tracking-widest flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span> Live Node
+                        </span>
+                    </div>
+                </div>
+                <!-- Controls and Settings Menu Trigger -->
+                <div class="flex items-center gap-4 text-[#8696a0] relative">
+                    <button class="hover:text-main transition-colors"><i class="fa-solid fa-circle-notch text-lg"></i></button>
+                    <button class="hover:text-main transition-colors"><i class="fa-solid fa-message text-lg"></i></button>
+                    <button id="menu-trigger" class="hover:text-main transition-colors py-2 px-1"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+                    
+                    <!-- CONTEXT DROPDOWN MENU -->
+                    <div id="settings-menu" class="absolute right-0 top-12 w-52 dropdown-bg border rounded-xl shadow-2xl py-2 hidden z-50">
+                        <button onclick="toggleThemeModal()" class="w-full text-left px-4 py-2.5 text-sm text-main dropdown-hover flex items-center gap-3 transition-colors">
+                            <i class="fa-solid fa-palette text-emerald-500 w-4"></i> Display Themes
+                        </button>
+                        <button onclick="toggleWallpaperModal()" class="w-full text-left px-4 py-2.5 text-sm text-main dropdown-hover flex items-center gap-3 transition-colors">
+                            <i class="fa-solid fa-image text-blue-500 w-4"></i> Chat Wallpapers
+                        </button>
+                        <hr class="border-custom my-1">
+                        <button onclick="triggerLogout()" class="w-full text-left px-4 py-2.5 text-sm text-red-400 dropdown-hover flex items-center gap-3 transition-colors">
+                            <i class="fa-solid fa-power-off w-4"></i> Terminate Node
                         </button>
                     </div>
                 </div>
-                
-                <div class="p-2.5 bg-sidebar flex-shrink-0">
-                    <span class="text-[11px] font-bold tracking-wider text-sub uppercase block pl-1">Recent Updates (Expires in 24h)</span>
-                </div>
+            </div>
 
-                <div id="status-stream-list-box" class="flex-1 overflow-y-auto divide-y divide-custom">
-                    <div class="p-4 text-center text-sm text-sub">No stories logged in the last 24 hours.</div>
+            <!-- Search Bar -->
+            <div class="p-2.5 shrink-0">
+                <div class="bg-input-bar flex items-center rounded-xl px-4 py-2 border border-custom">
+                    <i class="fa-solid fa-magnifying-glass text-xs text-sub mr-3"></i>
+                    <input id="contact-search" type="text" placeholder="Search operational matrices..." class="bg-transparent text-sm text-main w-full outline-none placeholder:text-sub">
                 </div>
+            </div>
+
+            <!-- Active Channels / Contacts List -->
+            <div id="contact-list" class="flex-1 overflow-y-auto no-scrollbar divide-y divide-custom/50">
+                <!-- Javascript will inject channels dynamically here -->
             </div>
         </div>
 
-        <!-- CHAT PANEL -->
-        <div id="chat-panel" class="hidden md:flex flex-1 flex-col h-full bg-chat-area relative z-10 overflow-hidden">
-            <div class="chat-bg" id="chat-wallpaper-canvas"></div>
-            
-            <div class="bg-panel-header h-[60px] p-4 flex items-center justify-between border-b border-custom z-10 shadow-md flex-shrink-0">
+        <!-- CHAT FRAME AREA -->
+        <div id="chat-panel" class="absolute inset-0 md:relative md:flex flex-col flex-1 h-full bg-chat-area z-10 hidden transition-all duration-300">
+            <!-- System Chat Wallpaper Layer -->
+            <div class="chat-bg"></div>
+
+            <!-- Chat Channel Top Header Bar -->
+            <div class="bg-panel-header h-16 flex items-center justify-between px-4 shrink-0 border-b border-custom z-10 shadow-sm">
                 <div class="flex items-center gap-3">
-                    <button id="btn-close-chat" class="md:hidden text-sub hover:text-main text-lg mr-1 py-1 px-2">
+                    <button id="chat-back-btn" class="md:hidden text-sub hover:text-main mr-1 text-lg transition-colors">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <div class="w-10 h-10 bg-[#00a884] text-[#111b21] rounded-full flex items-center justify-center text-base font-bold shadow uppercase bg-cover bg-center" id="active-chat-avatar">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
+                    <div id="active-avatar" class="w-10 h-10 rounded-full bg-cover bg-center border border-custom shadow-inner"></div>
                     <div>
-                        <h3 class="font-semibold text-main text-base" id="active-chat-title">Select a Contact</h3>
-                        <p class="text-xs text-[#00a884] font-medium" id="header-typing-status">End-to-End Private</p>
+                        <h2 id="active-name" class="text-main font-semibold text-sm tracking-wide">Select Operator Channel</h2>
+                        <span id="active-status" class="text-sub text-xs">Awaiting node selection</span>
                     </div>
                 </div>
-                
-                <!-- 3-DOT OPTIONS DROPDOWN INTERFACE -->
-                <div class="relative inline-block text-left z-30">
-                    <button id="chat-options-menu-btn" class="hidden text-sub hover:text-main p-2 rounded-full hover:bg-input-field transition duration-150 text-xl focus:outline-none">
-                        <i class="fa-solid fa-ellipsis-vertical"></i>
-                    </button>
-                    
-                    <!-- DROPDOWN BOX -->
-                    <div id="chat-options-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg border border-custom dropdown-bg focus:outline-none py-1">
-                        <button id="btn-dropdown-clear-chat" class="w-full text-left px-4 py-2.5 text-sm text-red-500 dropdown-hover font-medium transition duration-150 flex items-center gap-2">
-                            <i class="fa-solid fa-trash-can text-xs"></i> Clear Entire Chat
-                        </button>
-                    </div>
+                <div class="flex items-center gap-5 text-[#8696a0]">
+                    <button class="hover:text-main transition-colors"><i class="fa-solid fa-video"></i></button>
+                    <button class="hover:text-main transition-colors"><i class="fa-solid fa-phone"></i></button>
+                    <button class="hover:text-main transition-colors"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </div>
 
-            <div id="messages-box" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 z-10 flex flex-col">
-                <div class="m-auto text-center max-w-xs bg-panel-header p-4 rounded-xl border border-field">
-                    <i class="fa-solid fa-user-shield text-[#00a884] text-3xl mb-2 block"></i>
-                    <p class="text-sm text-main font-medium">Tap on any contact link on the left side menu to start private messaging.</p>
+            <!-- Stream Area for Realtime Logs & Messages -->
+            <div id="message-stream" class="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar relative z-10 flex flex-col justify-end">
+                <!-- Initializer Banner Placeholder when idle -->
+                <div id="idle-notice" class="m-auto text-center max-w-sm space-y-3 p-6 bg-sidebar/60 border border-custom rounded-2xl backdrop-blur-sm shadow-xl">
+                    <div class="w-12 h-12 rounded-full whatsapp-green/20 text-[#00a884] flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <h3 class="text-main font-medium">No Transmission Selected</h3>
+                    <p class="text-sub text-xs leading-relaxed">Select an active crypto-identity node channel from the directory pane layout to stream log protocols.</p>
                 </div>
             </div>
 
-            <div id="input-bar-container" class="hidden bg-input-bar p-3 items-center gap-2 border-t border-custom z-10 shadow-inner flex-shrink-0 w-full">
-                <input type="file" id="media-attachment-input" accept="image/*" class="hidden">
-                
-                <button id="btn-trigger-media" class="w-10 h-10 text-sub hover:text-main flex items-center justify-center text-lg transition transform active:scale-90 flex-shrink-0">
-                    <i class="fa-solid fa-camera"></i>
+            <!-- Footer Message Processing Bar Panel -->
+            <div id="input-container" class="bg-input-bar h-16 flex items-center px-4 gap-3 shrink-0 border-t border-custom z-10 hidden">
+                <div class="flex items-center gap-4 text-[#8696a0]">
+                    <button class="hover:text-main transition-colors text-xl"><i class="fa-regular fa-face-smile"></i></button>
+                    <button class="hover:text-main transition-colors text-xl rotate-45"><i class="fa-solid fa-paperclip"></i></button>
+                </div>
+                <div class="flex-1 relative">
+                    <input id="chat-input" type="text" placeholder="Type encrypted network payload transmission..." class="w-full bg-input-field text-main text-sm rounded-xl py-2.5 pl-4 pr-4 border border-field focus:border-[#00a884] outline-none transition-colors">
+                </div>
+                <button id="btn-send" class="whatsapp-green text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md hover:bg-[#008f6f] transition-all shrink-0">
+                    <i class="fa-solid fa-paper-plane text-sm ml-0.5"></i>
                 </button>
+            </div>
 
-                <input type="text" id="message-field" placeholder="Type a private message..." autocomplete="off" class="flex-1 bg-input-field text-main text-base px-4 py-2.5 rounded-lg border border-field focus:outline-none focus:border-[#00a884] transition min-w-0">
-                
-                <button id="btn-send-message" class="w-11 h-11 whatsapp-green hover:bg-[#008f72] text-[#111b21] rounded-full flex items-center justify-center shadow-md transition transform active:scale-95 text-base flex-shrink-0">
-                    <i class="fa-solid fa-paper-plane"></i>
+        </div>
+    </div>
+
+    <!-- DISPLAY DESIGN MANAGEMENT MODAL -->
+    <div id="theme-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="dropdown-bg border w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-custom pb-3">
+                <h3 class="text-main font-bold text-base flex items-center gap-2"><i class="fa-solid fa-palette text-emerald-500"></i> Interface Customizer</h3>
+                <button onclick="toggleThemeModal()" class="text-sub hover:text-main text-sm"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="applySystemTheme('dark-mode')" class="p-3 rounded-xl border border-custom bg-[#111b21] text-gray-200 text-sm font-medium hover:scale-[1.02] transition-transform text-left flex items-center gap-2">
+                    <span class="w-4 h-4 rounded-full bg-[#00a884]"></span> Deep Charcoal
+                </button>
+                <button onclick="applySystemTheme('day-mode')" class="p-3 rounded-xl border border-custom bg-[#efeae2] text-gray-800 text-sm font-medium hover:scale-[1.02] transition-transform text-left flex items-center gap-2">
+                    <span class="w-4 h-4 rounded-full bg-[#ffffff] border"></span> Arctic Frost
+                </button>
+                <button onclick="applySystemTheme('blue-mode')" class="p-3 rounded-xl border border-custom bg-[#0f172a] text-[#f8fafc] text-sm font-medium hover:scale-[1.02] transition-transform text-left flex items-center gap-2">
+                    <span class="w-4 h-4 rounded-full bg-[#1e293b]"></span> Cyber Cobalt
+                </button>
+                <button onclick="applySystemTheme('green-mode')" class="p-3 rounded-xl border border-custom bg-[#052e16] text-[#f0fdf4] text-sm font-medium hover:scale-[1.02] transition-transform text-left flex items-center gap-2">
+                    <span class="w-4 h-4 rounded-full bg-[#14532d]"></span> Matrix Emerald
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- WALLPAPER MODAL -->
+    <div id="wallpaper-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="dropdown-bg border w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-custom pb-3">
+                <h3 class="text-main font-bold text-base flex items-center gap-2"><i class="fa-solid fa-image text-blue-500"></i> Backdrop Layer Array</h3>
+                <button onclick="toggleWallpaperModal()" class="text-sub hover:text-main text-sm"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <button onclick="applyWallpaper('reset')" class="w-full p-3 rounded-xl border border-custom text-left text-sm text-main dropdown-hover flex items-center gap-3 transition-colors">
+                    <i class="fa-solid fa-border-all text-sub"></i> Default Cryptogram Grid
+                </button>
+                <button onclick="applyWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600')" class="w-full p-3 rounded-xl border border-custom text-left text-sm text-main dropdown-hover flex items-center gap-3 transition-colors">
+                    <span class="w-5 h-5 rounded bg-purple-500 inline-block"></span> Abstract Minimalist Mesh
+                </button>
+                <button onclick="applyWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=600')" class="w-full p-3 rounded-xl border border-custom text-left text-sm text-main dropdown-hover flex items-center gap-3 transition-colors">
+                    <span class="w-5 h-5 rounded bg-gradient-to-r from-blue-500 to-pink-500 inline-block"></span> Cyber Horizon Spectrum
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CORE CHAT SCRIPT LOGIC ENGINE -->
     <script>
-        window.activeUserPhone = "";
-        window.selectedTargetUser = "";
-        window.cachedUsersNames = {};
-        window.cachedUsersDPs = {};
-        window.globalUnreadStore = {}; 
-        window.statusTimerTracker = null;
-        window.ADMIN_OWNER_NUMBER = "+917377535927"; 
-    </script>
+        // CONFIG SECURE PARAMS
+        const KEY_PARAM = "KAUSAR";
+        const PASS_PARAM = "12345";
 
-    <!-- FIREBASE LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // APP INTERNAL DATABASES
+        const CONTACTS = [
+            { id: 1, name: "Alpha Core Operator", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", status: "Online", key: "RSA-4096" },
+            { id: 2, name: "Omega Ledger Channel", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150", status: "Away", key: "AES-256" },
+            { id: 3, name: "Beta Routing Proxy", avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150", status: "Offline", key: "DES-X" }
+        ];
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyAHazZpA2srlEclDKE0qWrDuj7-ULVWnLg",
-          authDomain: "kausar-chat-hub.firebaseapp.com",
-          projectId: "kausar-chat-hub",
-          storageBucket: "kausar-chat-hub.firebasestorage.app",
-          messagingSenderId: "543766591580",
-          appId: "1:543766591580:web:fbbcdd538d3c403e5bce99"
-        };
+        let CHAT_HISTORIES = { 1: [], 2: [], 3: [] };
+        let selectedContactId = null;
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        // AUTHENTICATION PROTOCOL HANDLERS
+        document.getElementById('btn-login').addEventListener('click', runAuthVerify);
+        
+        function runAuthVerify() {
+            const key = document.getElementById('login-key').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+            const err = document.getElementById('login-error');
 
-        let globalUnsubscribe = null;
-        let lastMessageCount = 0; 
-        let originalTitle = document.title;
-        let blinkInterval = null;
-        let base64ProfileDPHolder = "";
-
-        // PWA App Badge counter update handler
-        function updateAppBadgeCounter(totalUnread) {
-            if ('setAppBadge' in navigator) {
-                if (totalUnread > 0) {
-                    navigator.setAppBadge(totalUnread).catch((err) => console.log(err));
-                } else {
-                    navigator.clearAppBadge().catch((err) => console.log(err));
-                }
-            }
-        }
-
-        // Service Worker registration code
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log("Chat Service Worker Connected!"))
-            .catch(err => console.log("SW Error:", err));
-        }
-
-        function compressAndProcessImage(file, maxWidth, maxHeight, quality, callback) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function (event) {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = function () {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > maxWidth) {
-                            height *= maxWidth / width;
-                            width = maxWidth;
-                        }
-                    } else {
-                        if (height > maxHeight) {
-                            width *= maxHeight / height;
-                            height = maxHeight;
-                        }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    const dataUrl = canvas.toDataURL('image/jpeg', quality);
-                    callback(dataUrl);
-                };
-            };
-        }
-
-        function initAppThemeEngine() {
-            const savedTheme = localStorage.getItem('kh_app_theme') || 'dark-mode';
-            document.body.className = `dynamic-height flex items-center justify-center overflow-hidden fixed inset-0 ${savedTheme}`;
-            
-            const savedWallpaper = localStorage.getItem('kh_custom_wallpaper');
-            const canvas = document.getElementById('chat-wallpaper-canvas');
-            const panel = document.getElementById('chat-panel');
-            const removeBtn = document.getElementById('btn-remove-wallpaper');
-
-            if(savedWallpaper) {
-                canvas.style.backgroundImage = `url('${savedWallpaper}')`;
-                panel.classList.add('custom-wallpaper-active');
-                if(removeBtn) removeBtn.classList.remove('hidden');
+            if(key === KEY_PARAM && pass === PASS_PARAM) {
+                document.getElementById('login-screen').classList.add('hidden');
+                initApplicationCore();
             } else {
-                panel.classList.remove('custom-wallpaper-active');
-                if(removeBtn) removeBtn.classList.add('hidden');
+                err.classList.remove('hidden');
             }
         }
 
-        window.launchFullScreenStatusViewer = function(username, avatarData, statusStoryObj) {
-            clearTimeout(window.statusTimerTracker);
-            const modal = document.getElementById('status-viewer-modal');
-            const nameField = document.getElementById('viewer-status-username');
-            const avatarField = document.getElementById('viewer-status-avatar');
-            const contentHolder = document.getElementById('status-media-content-holder');
-            const progressBar = document.getElementById('status-progress-bar');
-
-            nameField.innerText = username;
-            if(avatarData) { avatarField.style.backgroundImage = `url('${avatarData}')`; } 
-            else { avatarField.style.backgroundImage = "none"; }
-
-            contentHolder.innerHTML = "";
-            progressBar.style.width = '0%';
-
-            if(statusStoryObj.mediaType === 'video') {
-                const videoEl = document.createElement('video');
-                videoEl.src = statusStoryObj.mediaData;
-                videoEl.autoplay = true;
-                videoEl.controls = false;
-                videoEl.className = "max-w-full max-h-full object-contain rounded shadow-lg";
-                contentHolder.appendChild(videoEl);
-            } else {
-                const imgEl = document.createElement('img');
-                imgEl.src = statusStoryObj.mediaData;
-                imgEl.className = "max-w-full max-h-full object-contain rounded shadow-lg";
-                contentHolder.appendChild(imgEl);
-            }
-
-            modal.classList.remove('hidden');
-            setTimeout(() => { progressBar.style.width = '100%'; }, 50);
-
-            window.statusTimerTracker = setTimeout(() => {
-                modal.classList.add('hidden');
-                contentHolder.innerHTML = "";
-            }, 5000);
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initAppThemeEngine();
-
-            // 3-DOT DROPDOWN TOGGLE LOGIC
-            const menuBtn = document.getElementById('chat-options-menu-btn');
-            const dropdownBox = document.getElementById('chat-options-dropdown');
+        // INITIALIZE APP LOGIC
+        function initApplicationCore() {
+            renderContactDirectory();
+            setupThemePreferences();
             
-            menuBtn.addEventListener('click', (e) => {
+            // Menu Bindings
+            document.getElementById('menu-trigger').addEventListener('click', (e) => {
                 e.stopPropagation();
-                dropdownBox.classList.toggle('hidden');
+                document.getElementById('settings-menu').classList.toggle('hidden');
             });
-
-            // Close dropdown when clicking anywhere outside
             document.addEventListener('click', () => {
-                dropdownBox.classList.add('hidden');
+                document.getElementById('settings-menu').classList.add('hidden');
             });
 
-            document.getElementById('my-profile-header-trigger').addEventListener('click', async () => {
-                const mySnap = await getDoc(doc(db, "registered_users", window.activeUserPhone));
-                if(mySnap.exists()) {
-                    const currentData = mySnap.data();
-                    document.getElementById('edit-profile-name-input').value = currentData.name || "";
-                    base64ProfileDPHolder = currentData.dp || "";
-                    
-                    const previewBox = document.getElementById('modal-dp-preview');
-                    if(base64ProfileDPHolder) {
-                        previewBox.style.backgroundImage = `url('${base64ProfileDPHolder}')`;
-                        previewBox.innerText = "";
-                    } else {
-                        previewBox.style.backgroundImage = "none";
-                        previewBox.innerText = (currentData.name || "?").substring(0, 1).toUpperCase();
-                    }
-                    document.getElementById('edit-profile-modal').classList.remove('hidden');
-                }
+            // Messaging Actions
+            document.getElementById('btn-send').addEventListener('click', processOutgoingPayload);
+            document.getElementById('chat-input').addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') processOutgoingPayload();
             });
 
-            const themeButtons = document.querySelectorAll('.theme-select-btn');
-            themeButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const selectedTheme = this.getAttribute('data-theme');
-                    localStorage.setItem('kh_app_theme', selectedTheme);
-                    document.body.className = `dynamic-height flex items-center justify-center overflow-hidden fixed inset-0 ${selectedTheme}`;
-                });
-            });
-
-            document.getElementById('btn-trigger-wallpaper').addEventListener('click', () => {
-                document.getElementById('custom-wallpaper-input').click();
-            });
-
-            document.getElementById('custom-wallpaper-input').addEventListener('change', function() {
-                const file = this.files[0];
-                if(!file) return;
-                compressAndProcessImage(file, 1280, 1280, 0.7, function(compressedBase64) {
-                    localStorage.setItem('kh_custom_wallpaper', compressedBase64);
-                    const canvas = document.getElementById('chat-wallpaper-canvas');
-                    const panel = document.getElementById('chat-panel');
-                    canvas.style.backgroundImage = `url('${compressedBase64}')`;
-                    panel.classList.add('custom-wallpaper-active');
-                    document.getElementById('btn-remove-wallpaper').classList.remove('hidden');
-                });
-            });
-
-            document.getElementById('btn-remove-wallpaper').addEventListener('click', function() {
-                localStorage.removeItem('kh_custom_wallpaper');
-                const canvas = document.getElementById('chat-wallpaper-canvas');
-                const panel = document.getElementById('chat-panel');
-                canvas.style.backgroundImage = "url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')";
-                panel.classList.remove('custom-wallpaper-active');
-                this.classList.add('hidden');
-            });
-
-            document.getElementById('tab-chats-btn').addEventListener('click', function() {
-                this.classList.add('text-[#00a884]', 'border-[#00a884]');
-                this.classList.remove('text-sub', 'border-transparent');
-                document.getElementById('tab-status-btn').classList.remove('text-[#00a884]', 'border-[#00a884]');
-                document.getElementById('tab-status-btn').classList.add('text-sub', 'border-transparent');
-                document.getElementById('chats-tab-content').classList.remove('hidden');
-                document.getElementById('status-tab-content').classList.add('hidden');
-            });
-
-            document.getElementById('tab-status-btn').addEventListener('click', function() {
-                this.classList.add('text-[#00a884]', 'border-[#00a884]');
-                this.classList.remove('text-sub', 'border-transparent');
-                document.getElementById('tab-chats-btn').classList.remove('text-[#00a884]', 'border-[#00a884]');
-                document.getElementById('tab-chats-btn').classList.add('text-sub', 'border-transparent');
-                document.getElementById('status-tab-content').classList.remove('hidden');
-                document.getElementById('chats-tab-content').classList.add('hidden');
-                syncStatusStoriesStream();
-            });
-
-            document.getElementById('btn-trigger-status-upload').addEventListener('click', () => {
-                document.getElementById('status-media-file-input').click();
-            });
-
-            document.getElementById('status-media-file-input').addEventListener('change', function() {
-                uploadUserStatusStory(this);
-            });
-
-            document.getElementById('btn-close-status-viewer').addEventListener('click', () => {
-                clearTimeout(window.statusTimerTracker);
-                document.getElementById('status-media-content-holder').innerHTML = ""; 
-                document.getElementById('status-viewer-modal').classList.add('hidden');
-            });
-
-            document.getElementById('btn-phone-next').addEventListener('click', () => {
-                const num = document.getElementById('phone-number').value.trim();
-                if (num.length !== 10 || isNaN(num)) {
-                    alert("Please type a valid 10-digit mobile number.");
-                    return;
-                }
-                window.activeUserPhone = "+91" + num;
-                document.getElementById('phone-stage').classList.add('hidden');
-                document.getElementById('otp-stage').classList.remove('hidden');
-            });
-
-            document.getElementById('btn-verify-pin').addEventListener('click', async () => {
-                const pin = document.getElementById('otp-code').value.trim();
-                if (pin === "786055") {
-                    localStorage.setItem('kausar_chat_session', window.activeUserPhone);
-                    document.getElementById('auth-container').classList.add('hidden');
-                    
-                    const userCheckSnap = await getDoc(doc(db, "registered_users", window.activeUserPhone));
-                    if(!userCheckSnap.exists()) {
-                        await setDoc(doc(db, "registered_users", window.activeUserPhone), {
-                            phone: window.activeUserPhone,
-                            name: "User_" + window.activeUserPhone.substring(7),
-                            dp: "",
-                            joinedAt: serverTimestamp()
-                        });
-                    }
-                    checkProfileSetupRequirement();
-                } else {
-                    alert("Incorrect Security PIN. Access Denied.");
-                }
-            });
-
-            document.getElementById('btn-save-profile').addEventListener('click', async () => {
-                const chosenName = document.getElementById('profile-name-input').value.trim();
-                if(!chosenName || chosenName.length < 2) {
-                    alert("Please enter a valid name.");
-                    return;
-                }
-                document.getElementById('profile-modal').classList.add('hidden');
-                await setDoc(doc(db, "registered_users", window.activeUserPhone), {
-                    phone: window.activeUserPhone,
-                    name: chosenName,
-                    dp: "",
-                    joinedAt: serverTimestamp()
-                }, { merge: true });
-                startPrivateSystem();
-            });
-
-            document.getElementById('btn-close-profile-modal').addEventListener('click', () => {
-                document.getElementById('edit-profile-modal').classList.add('hidden');
-            });
-
-            document.getElementById('dp-upload-trigger').addEventListener('click', () => {
-                document.getElementById('profile-dp-file-input').click();
-            });
-
-            document.getElementById('profile-dp-file-input').addEventListener('change', function() {
-                const file = this.files[0];
-                if (!file) return;
-                compressAndProcessImage(file, 400, 400, 0.7, function(compressedBase64) {
-                    base64ProfileDPHolder = compressedBase64;
-                    const previewBox = document.getElementById('modal-dp-preview');
-                    previewBox.style.backgroundImage = `url('${base64ProfileDPHolder}')`;
-                    previewBox.innerText = "";
-                });
-            });
-
-            document.getElementById('btn-update-profile').addEventListener('click', async () => {
-                const upName = document.getElementById('edit-profile-name-input').value.trim();
-                if(!upName || upName.length < 2) {
-                    alert("Naam kam se kam 2 letters ka hona chahiye.");
-                    return;
-                }
-                try {
-                    await updateDoc(doc(db, "registered_users", window.activeUserPhone), {
-                        name: upName,
-                        dp: base64ProfileDPHolder
-                    });
-                    document.getElementById('edit-profile-modal').classList.add('hidden');
-                    alert("Settings saved successfully!");
-                } catch(err) { alert("Update failed."); }
-            });
-
-            document.getElementById('btn-close-chat').addEventListener('click', () => {
-                document.getElementById('sidebar-panel').classList.remove('hidden');
-                document.getElementById('sidebar-panel').classList.add('w-full');
+            // Back Button for Mobile View
+            document.getElementById('chat-back-btn').addEventListener('click', () => {
                 document.getElementById('chat-panel').classList.add('hidden');
-                document.getElementById('chat-panel').classList.remove('flex');
-                document.getElementById('chat-options-menu-btn').classList.add('hidden');
-                window.selectedTargetUser = "";
-                if(globalUnsubscribe) globalUnsubscribe();
-                listenToAllIncomingUnreadMessages();
-            });
-
-            document.getElementById('btn-trigger-media').addEventListener('click', () => {
-                document.getElementById('media-attachment-input').click();
-            });
-
-            document.getElementById('media-attachment-input').addEventListener('change', function() {
-                processAndSendPhoto(this);
-            });
-
-            document.getElementById('btn-send-message').addEventListener('click', () => { dispatchPrivateMessage(); });
-            document.getElementById('message-field').addEventListener('keydown', (e) => { if(e.key === 'Enter') dispatchPrivateMessage(); });
-            document.getElementById('btn-logout').addEventListener('click', () => { triggerAppLogOut(); });
-            
-            // CLEAR CHAT FROM DROPDOWN LOGIC
-            document.getElementById('btn-dropdown-clear-chat').addEventListener('click', async (e) => {
-                e.stopPropagation();
-                dropdownBox.classList.add('hidden'); 
-                if(confirm("Kya aap is chat ke saare messages SERVER se PERMANENTLY delete karna chahte hain?")) {
-                    try {
-                        const q1 = query(collection(db, "whatsapp_chats"), where("sender", "==", window.activeUserPhone), where("receiver", "==", window.selectedTargetUser));
-                        const q2 = query(collection(db, "whatsapp_chats"), where("sender", "==", window.selectedTargetUser), where("receiver", "==", window.activeUserPhone));
-                        
-                        const snap1 = await getDocs(q1);
-                        const snap2 = await getDocs(q2);
-                        
-                        snap1.forEach(async (messageDoc) => { await deleteDoc(doc(db, "whatsapp_chats", messageDoc.id)); });
-                        snap2.forEach(async (messageDoc) => { await deleteDoc(doc(db, "whatsapp_chats", messageDoc.id)); });
-                        alert("Puri chat server aur dono mobile se permanently delete ho gayi!");
-                    } catch(err) { alert("Chat clear karne me error aaya."); }
-                }
-            });
-
-            const savedSession = localStorage.getItem('kausar_chat_session');
-            if (savedSession) {
-                window.activeUserPhone = savedSession;
-                checkProfileSetupRequirement();
-            }
-        });
-
-        async function uploadUserStatusStory(inputElement) {
-            const file = inputElement.files[0];
-            if(!file) return;
-            if(file.size > 10 * 1024 * 1024) { alert("File size 10MB se zyada hai!"); return; }
-
-            const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-            if(mediaType === 'image') {
-                compressAndProcessImage(file, 1280, 1280, 0.6, async function(compressedDataUrl) {
-                    await saveStoryToFirebase(compressedDataUrl, 'image');
-                });
-            } else {
-                if(file.size > 2.5 * 1024 * 1024) { alert("Videos limits under 2.5MB required."); return; }
-                const reader = new FileReader();
-                reader.onload = async function(e) { await saveStoryToFirebase(e.target.result, 'video'); };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function saveStoryToFirebase(finalDataStream, type) {
-            try {
-                await addDoc(collection(db, "whatsapp_status_stories"), {
-                    senderPhone: window.activeUserPhone,
-                    senderName: window.cachedUsersNames[window.activeUserPhone] || window.activeUserPhone,
-                    mediaData: finalDataStream, 
-                    mediaType: type,
-                    timestamp: serverTimestamp(),
-                    createdAtMillis: Date.now()
-                });
-                alert("Status uploaded successfully!");
-                syncStatusStoriesStream();
-            } catch(err) { alert("Upload failed."); }
-        }
-
-        function syncStatusStoriesStream() {
-            const statusQuery = query(collection(db, "whatsapp_status_stories"), orderBy("createdAtMillis", "desc"));
-            onSnapshot(statusQuery, (snapshot) => {
-                const streamContainer = document.getElementById('status-stream-list-box');
-                streamContainer.innerHTML = "";
-                const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
-                let validStoriesTracker = 0;
-                let uniqueUsersMap = {};
-
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if(data.createdAtMillis < twentyFourHoursAgo) return;
-                    if(!uniqueUsersMap[data.senderPhone]) uniqueUsersMap[data.senderPhone] = data;
-                });
-
-                Object.keys(uniqueUsersMap).forEach((userPhone) => {
-                    const statusData = uniqueUsersMap[userPhone];
-                    validStoriesTracker++;
-                    const row = document.createElement('div');
-                    row.className = "flex items-center gap-3.5 p-3.5 cursor-pointer hover:bg-panel-header/50 transition";
-                    const senderDisplayName = window.cachedUsersNames[userPhone] || statusData.senderName;
-                    const senderAvatarData = window.cachedUsersDPs[userPhone] || "";
-                    const initial = senderDisplayName.substring(0, 1).toUpperCase();
-
-                    let avatarCircleLayout = senderAvatarData ? 
-                        `<div class="w-12 h-12 rounded-full bg-cover bg-center status-ring shadow" style="background-image: url('${senderAvatarData}')"></div>` : 
-                        `<div class="w-12 h-12 rounded-full bg-panel-header text-[#00a884] flex items-center justify-center font-bold text-base uppercase status-ring border border-field shadow">${initial}</div>`;
-
-                    row.innerHTML = `
-                        ${avatarCircleLayout}
-                        <div class="flex-1 min-w-0">
-                            <h4 class="font-semibold text-sm text-main truncate">${userPhone === window.activeUserPhone ? 'My Status' : senderDisplayName}</h4>
-                            <p class="text-xs text-sub truncate mt-0.5">Click to view story</p>
-                        </div>`;
-                    row.addEventListener('click', () => { launchFullScreenStatusViewer(senderDisplayName, senderAvatarData, statusData); });
-                    streamContainer.appendChild(row);
-                });
-                if(validStoriesTracker === 0) { streamContainer.innerHTML = `<div class="p-6 text-center text-sm text-sub">No stories logged.</div>`; }
+                document.getElementById('sidebar-panel').classList.remove('hidden');
             });
         }
 
-        function triggerAppLogOut() {
-            localStorage.clear();
-            window.location.reload();
-        }
+        // RENDER CONTACT DIRECTORY OVER SIDEBAR
+        function renderContactDirectory() {
+            const listContainer = document.getElementById('contact-list');
+            listContainer.innerHTML = '';
 
-        window.deleteMessagePermanently = async function(msgId) {
-            if(confirm("Kya aap is message ko SERVER se permanently delete karna chahte hain?")) {
-                try { await deleteDoc(doc(db, "whatsapp_chats", msgId)); } catch(err) { alert("Message delete karne me problem aayi."); }
-            }
-        };
-
-        window.openTargetChatWindow = function(targetUserPhone) {
-            window.selectedTargetUser = targetUserPhone;
-            lastMessageCount = 0; 
-            
-            let checkpoints = JSON.parse(localStorage.getItem('kausar_read_checkpoints') || '{}');
-            checkpoints[targetUserPhone] = Date.now();
-            localStorage.setItem('kausar_read_checkpoints', JSON.stringify(checkpoints));
-            
-            // UI Switch to Chat View on Mobile
-            document.getElementById('sidebar-panel').classList.add('hidden');
-            document.getElementById('sidebar-panel').classList.remove('w-full');
-            const chatPanel = document.getElementById('chat-panel');
-            chatPanel.classList.remove('hidden');
-            chatPanel.classList.add('flex');
-
-            const mappedTargetName = window.cachedUsersNames[targetUserPhone] || targetUserPhone;
-            const mappedTargetDP = window.cachedUsersDPs[targetUserPhone] || "";
-            document.getElementById('active-chat-title').innerText = mappedTargetName;
-            
-            const chatHeaderAvatar = document.getElementById('active-chat-avatar');
-            if(mappedTargetDP) { chatHeaderAvatar.style.backgroundImage = `url('${mappedTargetDP}')`; chatHeaderAvatar.innerText = ""; } 
-            else { chatHeaderAvatar.style.backgroundImage = "none"; chatHeaderAvatar.innerText = mappedTargetName.substring(0, 1).toUpperCase(); }
-            
-            document.getElementById('input-bar-container').classList.remove('hidden');
-            document.getElementById('input-bar-container').classList.add('flex');
-            document.getElementById('chat-options-menu-btn').classList.remove('hidden');
-
-            if(globalUnsubscribe) globalUnsubscribe();
-            streamPrivateMessagesBetweenUsers();
-            listenToAllIncomingUnreadMessages();
-        };
-
-        async function checkProfileSetupRequirement() {
-            onSnapshot(doc(db, "registered_users", window.activeUserPhone), (snapshot) => {
-                if(!snapshot.exists()) { triggerAppLogOut(); } 
-                else {
-                    const data = snapshot.data();
-                    document.getElementById('user-display-name').innerHTML = `${data.name || 'User'} <i class="fa-solid fa-gear text-[10px] text-sub"></i>`;
-                    document.getElementById('user-phone').innerText = window.activeUserPhone;
-                    const avatarBox = document.getElementById('user-avatar');
-                    const myStatusAvatar = document.getElementById('my-status-avatar-preview');
-                    if(data.dp) {
-                        avatarBox.style.backgroundImage = `url('${data.dp}')`; avatarBox.innerText = "";
-                        myStatusAvatar.style.backgroundImage = `url('${data.dp}')`; myStatusAvatar.innerText = "";
-                    } else {
-                        avatarBox.style.backgroundImage = "none"; avatarBox.innerText = (data.name || "?").substring(0, 1).toUpperCase();
-                        myStatusAvatar.style.backgroundImage = "none"; myStatusAvatar.innerText = (data.name || "?").substring(0, 1).toUpperCase();
-                    }
-                }
-            });
-
-            const userSnap = await getDoc(doc(db, "registered_users", window.activeUserPhone));
-            if (userSnap.exists() && userSnap.data().name) { startPrivateSystem(); } 
-            else {
-                document.getElementById('auth-container').classList.add('hidden');
-                document.getElementById('profile-modal').classList.remove('hidden');
-            }
-        }
-
-        function startPrivateSystem() {
-            document.getElementById('auth-container').classList.add('hidden');
-            document.getElementById('chat-container').classList.remove('hidden');
-            listenToAllIncomingUnreadMessages();
-            syncConnectedUsersList();
-        }
-
-        function listenToAllIncomingUnreadMessages() {
-            const unreadQuery = query(collection(db, "whatsapp_chats"), orderBy("timestamp", "asc"));
-            onSnapshot(unreadQuery, (snapshot) => {
-                let countsTracker = {};
-                let totalUnreadMessagesSum = 0;
-                const checkpoints = JSON.parse(localStorage.getItem('kausar_read_checkpoints') || '{}');
-
-                snapshot.forEach((messageDoc) => {
-                    const data = messageDoc.data();
-                    if(data.receiver === window.activeUserPhone) {
-                        const sender = data.sender;
-                        const lastReadPoint = checkpoints[sender] || 0;
-                        const msgTimeMillis = data.createdAtMillis || (data.timestamp ? data.timestamp.toDate().getTime() : Date.now());
-                        if(msgTimeMillis > lastReadPoint) { 
-                            countsTracker[sender] = (countsTracker[sender] || 0) + 1;
-                            totalUnreadMessagesSum++;
-                        }
-                    }
-                });
-                window.globalUnreadStore = countsTracker;
+            CONTACTS.forEach(contact => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center gap-3 p-3.5 dropdown-hover cursor-pointer transition-colors border-b border-custom/40';
                 
-                updateAppBadgeCounter(totalUnreadMessagesSum);
-                refreshConnectedUsersUIIcons();
-            });
-        }
+                // IMPORTANT FIX: Using explicit data attribute for targeting click event accurately
+                item.setAttribute('data-id', contact.id);
 
-        function syncConnectedUsersList() {
-            onSnapshot(collection(db, "registered_users"), (snapshot) => {
-                window.currentUsersSnapshotCache = snapshot;
-                refreshConnectedUsersUIIcons();
-            });
-        }
-
-        function refreshConnectedUsersUIIcons() {
-            if(!window.currentUsersSnapshotCache) return;
-            const listContainer = document.getElementById('users-list-box');
-            listContainer.innerHTML = "";
-            let totalCount = 0;
-
-            window.currentUsersSnapshotCache.forEach((userDoc) => {
-                const targetPhone = userDoc.id;
-                const targetData = userDoc.data();
-                if(targetPhone === window.activeUserPhone) return; 
-                
-                window.cachedUsersNames[targetPhone] = targetData.name || targetPhone;
-                window.cachedUsersDPs[targetPhone] = targetData.dp || "";
-                totalCount++;
-
-                const userRow = document.createElement('div');
-                userRow.className = `flex items-center gap-3 p-3.5 cursor-pointer hover:bg-panel-header border-b border-custom transition ${window.selectedTargetUser === targetPhone ? 'bg-input-field' : ''}`;
-                const printName = targetData.name || targetPhone;
-                const hasDP = targetData.dp || "";
-                const initialLetter = printName.substring(0, 1).toUpperCase();
-
-                let dynamicAvatarRow = hasDP ? `<div class="w-11 h-11 border border-field rounded-full shadow-md bg-cover bg-center" style="background-image: url('${hasDP}')"></div>` : 
-                    `<div class="w-11 h-11 bg-panel-header border border-field rounded-full flex items-center justify-center text-base text-[#00a884] font-bold shadow-md uppercase">${initialLetter}</div>`;
-
-                let unreadCount = window.globalUnreadStore[targetPhone] || 0;
-                if(window.selectedTargetUser === targetPhone) unreadCount = 0;
-
-                let badgeHtmlElementCode = "";
-                if(unreadCount > 0) {
-                    let textDisplayLabel = unreadCount > 4 ? "4+" : unreadCount;
-                    badgeHtmlElementCode = `<div class="whatsapp-green text-[#111b21] text-xs font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center animate-bounce shadow-md select-none">${textDisplayLabel}</div>`;
-                }
-
-                userRow.innerHTML = `
-                    ${dynamicAvatarRow}
+                item.innerHTML = `
+                    <div class="w-12 h-12 rounded-full bg-cover bg-center border border-custom shadow-sm shrink-0" style="background-image: url('${contact.avatar}')"></div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-medium text-base text-main truncate">${printName}</h4>
-                        <p class="text-xs text-sub truncate mt-0.5">${targetPhone}</p>
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <h4 class="text-main font-medium text-sm truncate tracking-wide">${contact.name}</h4>
+                            <span class="text-[10px] text-sub font-mono">${contact.key}</span>
+                        </div>
+                        <p class="text-sub text-xs truncate flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full ${contact.status === 'Online' ? 'bg-emerald-500' : contact.status === 'Away' ? 'bg-amber-500' : 'bg-gray-500'}"></span>
+                            ${contact.status}
+                        </p>
                     </div>
-                    <div class="flex-shrink-0">${badgeHtmlElementCode}</div>`;
+                `;
 
-                userRow.addEventListener('click', () => { window.openTargetChatWindow(targetPhone); });
-                listContainer.appendChild(userRow);
+                // Attaching Event Listener Directly onto the item row container element 
+                item.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    selectActiveChannel(parseInt(id));
+                });
+
+                listContainer.appendChild(item);
             });
-            if(totalCount === 0) listContainer.innerHTML = `<div class="p-6 text-center text-sm text-sub">No active logs.</div>`;
         }
 
-        function triggerTabBlink(senderName) {
-            if (document.hidden) {
-                clearInterval(blinkInterval);
-                let isMine = false;
-                blinkInterval = setInterval(() => {
-                    document.title = isMine ? `New Message` : `Notification`;
-                    isMine = !isMine;
-                }, 1000);
+        // CHOOSE AND SHIFT ACTIVE STREAM CHANNEL VIEW
+        function selectActiveChannel(id) {
+            selectedContactId = id;
+            const contact = CONTACTS.find(c => c.id === id);
+            
+            if(!contact) return;
+
+            // UI Layer Visibility Swap for Mobile Screen Layouts
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar-panel').classList.add('hidden');
             }
-        }
-        window.addEventListener('focus', () => { clearInterval(blinkInterval); document.title = originalTitle; });
+            document.getElementById('chat-panel').classList.remove('hidden');
+            document.getElementById('chat-panel').classList.add('flex');
 
-        function processAndSendPhoto(inputElement) {
-            const file = inputElement.files[0];
-            if (!file || !window.selectedTargetUser) return;
-            compressAndProcessImage(file, 1000, 1000, 0.6, async function(compressedUrl) {
-                try {
-                    await addDoc(collection(db, "whatsapp_chats"), {
-                        sender: window.activeUserPhone,
-                        receiver: window.selectedTargetUser,
-                        message: compressedUrl, 
-                        type: "image",
-                        timestamp: serverTimestamp(),
-                        createdAtMillis: Date.now()
+            // Set Top Meta Info
+            document.getElementById('active-avatar').style.backgroundImage = `url('${contact.avatar}')`;
+            document.getElementById('active-name').innerText = contact.name;
+            document.getElementById('active-status').innerText = `Secure Sync Session Active • ${contact.key}`;
+
+            // Make Input Panel Active
+            document.getElementById('input-container').classList.remove('hidden');
+            
+            renderMessagePackStream();
+        }
+
+        // RENDER REALTIME CONVERSATION LAYOUT PROTOCOLS
+        function renderMessagePackStream() {
+            const stream = document.getElementById('message-stream');
+            stream.innerHTML = '';
+
+            const logs = CHAT_HISTORIES[selectedContactId] || [];
+
+            if(logs.length === 0) {
+                stream.innerHTML = `
+                    <div class="m-auto text-center max-w-xs p-4 bg-sidebar/40 border border-custom/60 rounded-xl">
+                        <p class="text-sub text-xs font-mono"><i class="fa-solid fa-terminal"></i> End-to-End Link Isolated. Session is clear of operational records.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            logs.forEach(log => {
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex w-full mb-1 ${log.dir === 'out' ? 'justify-end' : 'justify-start'}`;
+
+                const bubble = document.createElement('div');
+                bubble.className = `max-w-[75%] px-3.5 py-2 rounded-2xl text-sm shadow-sm relative ${
+                    log.dir === 'out' 
+                    ? 'whatsapp-green text-white rounded-tr-none font-medium' 
+                    : 'chat-bubble-recv text-main rounded-tl-none border border-custom'
+                }`;
+
+                bubble.innerHTML = `
+                    <p class="break-words leading-relaxed">${log.body}</p>
+                    <span class="block text-[9px] text-right mt-1 opacity-70 font-mono tracking-tighter">${log.time}</span>
+                `;
+
+                wrapper.appendChild(bubble);
+                stream.appendChild(wrapper);
+            });
+
+            // Dynamic Auto Scroll Anchor Lock down
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        // STREAM OUTGOING MESSAGE FLOW PROCESSING 
+        function processOutgoingPayload() {
+            const field = document.getElementById('chat-input');
+            const payload = field.value.trim();
+            if(!payload || !selectedContactId) return;
+
+            const now = new Date();
+            const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Append Output Payload log row entry array object record data
+            CHAT_HISTORIES[selectedContactId].push({
+                dir: 'out',
+                body: payload,
+                time: timestamp
+            });
+
+            field.value = '';
+            renderMessagePackStream();
+
+            // Setup Automated Simulated Echo AI Loop Counter back mock payload responses
+            setTimeout(() => {
+                if(selectedContactId === contactActiveCacheCheck(selectedContactId)) {
+                    CHAT_HISTORIES[selectedContactId].push({
+                        dir: 'in',
+                        body: `Automated Node Acknowledge Payload Received: "${payload.substring(0, 20)}..." Status OK. Complete.`,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     });
-                } catch(err) { console.log(err); }
-            });
-        }
-
-        function streamPrivateMessagesBetweenUsers() {
-            const chatQuery = query(collection(db, "whatsapp_chats"), orderBy("timestamp", "asc"));
-            globalUnsubscribe = onSnapshot(chatQuery, (snapshot) => {
-                const msgBox = document.getElementById('messages-box');
-                msgBox.innerHTML = "";
-                let currentValidMessagesCount = 0;
-                let lastSenderPhone = "";
-
-                snapshot.forEach((messageDoc) => {
-                    const data = messageDoc.data();
-                    const msgId = messageDoc.id;
-
-                    if ((data.sender === window.activeUserPhone && data.receiver === window.selectedTargetUser) ||
-                        (data.sender === window.selectedTargetUser && data.receiver === window.activeUserPhone)) {
-                        
-                        currentValidMessagesCount++;
-                        lastSenderPhone = data.sender;
-                        const isCurrentUserMe = (data.sender === window.activeUserPhone);
-                        const msgWrapper = document.createElement('div');
-                        msgWrapper.className = `flex w-full mb-1 group ${isCurrentUserMe ? 'justify-end' : 'justify-start'}`;
-                        
-                        let chatBubbleContent = "";
-                        if (data.type === "image" || data.message.startsWith("data:image/")) {
-                            chatBubbleContent = `<img src="${data.message}" class="rounded-md max-w-full max-h-[250px] object-cover block mt-1 cursor-pointer" onclick="window.open('${data.message}', '_blank')">`;
-                        } else {
-                            chatBubbleContent = `<p class="text-[14.5px] break-words">${data.message}</p>`;
-                        }
-
-                        msgWrapper.innerHTML = `
-                            <div class="max-w-[85%] md:max-w-[60%] rounded-lg pt-1.5 pb-5 pl-3 pr-8 shadow-sm relative min-w-[90px] ${isCurrentUserMe ? 'bg-[#005c4b] text-white rounded-tr-none' : 'chat-bubble-recv rounded-tl-none'}">
-                                ${chatBubbleContent}
-                                <button onclick="window.deleteMessagePermanently('${msgId}')" class="absolute top-1 right-1.5 text-xs text-sub opacity-0 group-hover:opacity-100 transition duration-150"><i class="fa-regular fa-trash-can"></i></button>
-                                <span class="text-[9.5px] text-sub absolute bottom-0.5 right-2 flex items-center gap-0.5">
-                                    ${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...'}
-                                    ${isCurrentUserMe ? '<i class="fa-solid fa-check-double text-[#53bdeb] text-[9px]"></i>' : ''}
-                                </span>
-                            </div>`;
-                        msgBox.appendChild(msgWrapper);
-                    }
-                });
-
-                if (lastMessageCount > 0 && currentValidMessagesCount > lastMessageCount) {
-                    if (lastSenderPhone !== window.activeUserPhone) {
-                        triggerTabBlink(window.cachedUsersNames[lastSenderPhone] || "Someone");
-                    }
+                    renderMessagePackStream();
                 }
-                lastMessageCount = currentValidMessagesCount;
-                msgBox.scrollTop = msgBox.scrollHeight;
-            });
+            }, 1200);
         }
 
-        async function dispatchPrivateMessage() {
-            const inputField = document.getElementById('message-field');
-            const messageTxt = inputField.value.trim();
-            if (!messageTxt || !window.selectedTargetUser) return;
-            inputField.value = "";
-            try {
-                await addDoc(collection(db, "whatsapp_chats"), {
-                    sender: window.activeUserPhone,
-                    receiver: window.selectedTargetUser,
-                    message: messageTxt,
-                    type: "text",
-                    timestamp: serverTimestamp(),
-                    createdAtMillis: Date.now()
-                });
-                let checkpoints = JSON.parse(localStorage.getItem('kausar_read_checkpoints') || '{}');
-                checkpoints[window.selectedTargetUser] = Date.now();
-                localStorage.setItem('kausar_read_checkpoints', JSON.stringify(checkpoints));
-                listenToAllIncomingUnreadMessages();
-            } catch(e) { console.log(e); }
+        function contactActiveCacheCheck(id) { return selectedContactId; }
+
+        // MANAGE INTERFACE STYLE PATTERNS
+        function applySystemTheme(themeClass) {
+            document.body.className = "h-screen w-screen overflow-hidden flex items-center justify-center " + themeClass;
+            localStorage.setItem('hub-theme', themeClass);
+        }
+
+        function setupThemePreferences() {
+            const cache = localStorage.getItem('hub-theme') || 'dark-mode';
+            applySystemTheme(cache);
+            const wp = localStorage.getItem('hub-wp');
+            if(wp) applyWallpaper(wp);
+        }
+
+        function applyWallpaper(url) {
+            if(url === 'reset') {
+                document.body.classList.remove('custom-wallpaper-active');
+                localStorage.removeItem('hub-wp');
+            } else {
+                document.body.style.setProperty('--custom-wp', `url('${url}')`);
+                document.body.classList.add('custom-wallpaper-active');
+                localStorage.setItem('hub-wp', url);
+            }
+            toggleWallpaperModal();
+        }
+
+        function toggleThemeModal() { document.getElementById('theme-modal').classList.toggle('hidden'); }
+        function toggleWallpaperModal() { document.getElementById('wallpaper-modal').classList.toggle('hidden'); }
+        function triggerLogout() { window.location.reload(); }
+
+        // PWA SERVICE WORKER REGISTERATION PROTOCOL
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('PWA Service Worker registered successfully.'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
         }
     </script>
 </body>
