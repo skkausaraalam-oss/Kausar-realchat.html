@@ -1,0 +1,17 @@
+{
+  "name": "Kausar Private Hub",
+  "short_name": "Kausar Chat",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#111b21",
+  "theme_color": "#00a884",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
