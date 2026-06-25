@@ -102,11 +102,37 @@
             width: 140px;
             height: 140px;
             fill: #d4af37; /* Royal Gold Color */
-            filter: drop-shadow(0px 4px 10px rgba(212, 175, 55, 0.3));
+            filter: drop-shadow(0px 4px 12px rgba(212, 175, 55, 0.4));
+        }
+
+        /* NEW SMOOTH SPLASH SCREEN FADE OUT */
+        .splash-fade-out {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
     </style>
 </head>
 <body class="dark-mode dynamic-height flex items-center justify-center overflow-hidden fixed inset-0">
+
+    <!-- REAL SPLASH LOADING SCREEN WITH DYNAMIC KING K LOGO -->
+    <div id="app-splash-screen" class="fixed inset-0 bg-[#111b21] z-[100] flex flex-col items-center justify-center select-none">
+        <div class="flex flex-col items-center animate-pulse">
+            <!-- King 'K' Logo on Splash Screen -->
+            <svg class="king-logo-svg mb-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22,35 C20.5,35 19.5,33.5 20.5,32 C21.5,30.5 23.5,30.5 24.5,32 C25.5,33.5 24.5,35 22,35 Z M31,28 C29.5,28 28.5,26.5 29.5,25 C30.5,23.5 32.5,23.5 33.5,25 C34.5,26.5 33.5,28 31,28 Z M42,25 C40.5,25 39.5,23.5 40.5,22 C41.5,20.5 43.5,20.5 44.5,22 C45.5,23.5 44.5,25 42,25 Z M53,28 C51.5,28 50.5,26.5 51.5,25 C52.5,23.5 54.5,23.5 55.5,25 C56.5,26.5 55.5,28 53,28 Z M62,35 C60.5,35 59.5,33.5 60.5,32 C61.5,30.5 63.5,30.5 64.5,32 C65.5,33.5 64.5,35 62,35 Z" />
+                <path d="M20,38 L25,43 L42,35 L59,43 L64,38 L54,45 L30,45 Z" />
+                <path d="M32,48 L44,48 L44,65 L32,77 Z" />
+                <path d="M44,62 L63,48 L76,48 L56,64 L81,85 L67,85 Z" />
+            </svg>
+            <h1 class="text-2xl font-bold text-white tracking-wide mt-2">Kausar Private Hub</h1>
+            <div class="mt-6 flex gap-1">
+                <div class="w-2 h-2 rounded-full bg-[#00a884] animate-bounce" style="animation-delay: 0.1s"></div>
+                <div class="w-2 h-2 rounded-full bg-[#00a884] animate-bounce" style="animation-delay: 0.2s"></div>
+                <div class="w-2 h-2 rounded-full bg-[#00a884] animate-bounce" style="animation-delay: 0.3s"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- APP INSTALL PROMPT BUTTON -->
     <div id="pwa-install-banner" class="hidden fixed bottom-4 left-4 right-4 bg-[#202c33] border border-[#00a884] p-3 rounded-lg z-50 flex items-center justify-between text-white shadow-2xl">
@@ -120,16 +146,13 @@
         <button id="btn-pwa-install" class="whatsapp-green hover:bg-[#008f72] text-[#111b21] font-bold py-1.5 px-3 rounded text-xs transition">Install</button>
     </div>
 
-    <!-- LOG IN CONTAINER (WITH HIGH RES VECTOR KING K LOGO) -->
+    <!-- LOG IN CONTAINER -->
     <div id="auth-container" class="w-full max-w-md p-6 bg-[#222e35] rounded-lg shadow-2xl border border-[#374248] z-10 m-4">
         <div class="text-center mb-6">
-            <!-- EXACT KING 'K' LOGO VECTOR FROM YOUR IMAGE -->
             <div class="flex items-center justify-center mb-2">
                 <svg class="king-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Crown (Taj) atop the letter K -->
                     <path d="M22,35 C20.5,35 19.5,33.5 20.5,32 C21.5,30.5 23.5,30.5 24.5,32 C25.5,33.5 24.5,35 22,35 Z M31,28 C29.5,28 28.5,26.5 29.5,25 C30.5,23.5 32.5,23.5 33.5,25 C34.5,26.5 33.5,28 31,28 Z M42,25 C40.5,25 39.5,23.5 40.5,22 C41.5,20.5 43.5,20.5 44.5,22 C45.5,23.5 44.5,25 42,25 Z M53,28 C51.5,28 50.5,26.5 51.5,25 C52.5,23.5 54.5,23.5 55.5,25 C56.5,26.5 55.5,28 53,28 Z M62,35 C60.5,35 59.5,33.5 60.5,32 C61.5,30.5 63.5,30.5 64.5,32 C65.5,33.5 64.5,35 62,35 Z" />
                     <path d="M20,38 L25,43 L42,35 L59,43 L64,38 L54,45 L30,45 Z" />
-                    <!-- Distinct Letter K Shapes matching the styling -->
                     <path d="M32,48 L44,48 L44,65 L32,77 Z" />
                     <path d="M44,62 L63,48 L76,48 L56,64 L81,85 L67,85 Z" />
                 </svg>
@@ -550,6 +573,15 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initAppThemeEngine();
+
+            // DISMISS SPLASH LOADING SCREEN SMOOTHLY
+            setTimeout(() => {
+                const splash = document.getElementById('app-splash-screen');
+                if(splash) {
+                    splash.classList.add('splash-fade-out');
+                    setTimeout(() => splash.remove(), 500);
+                }
+            }, 2500);
 
             const menuBtn = document.getElementById('chat-options-menu-btn');
             const dropdownBox = document.getElementById('chat-options-dropdown');
