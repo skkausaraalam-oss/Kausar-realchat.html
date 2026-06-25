@@ -40,7 +40,7 @@
         body.day-mode .text-main { color: #111b21; }
         body.day-mode .text-sub { color: #667781; }
         body.day-mode .chat-bubble-recv { background-color: #ffffff; color: #111b21; }
-        body.day-mode .dropdown-bg { background-color: #ffffff; border-color: #e9edef; shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        body.day-mode .dropdown-bg { background-color: #ffffff; border-color: #e9edef; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         body.day-mode .dropdown-hover:hover { background-color: #f0f2f5; }
 
         body.blue-mode { background-color: #0f172a; color: #f8fafc; font-family: Segoe UI, sans-serif; }
@@ -256,16 +256,16 @@
         <!-- SIDEBAR PANEL -->
         <div id="sidebar-panel" class="w-full md:w-[35%] bg-sidebar border-r border-custom flex flex-col h-full z-20">
             <div class="bg-panel-header h-[60px] p-4 flex items-center justify-between shadow-sm flex-shrink-0">
-                <div class="flex items-center gap-3 cursor-pointer p-1 rounded hover:bg-input-field transition" id="my-profile-header-trigger">
-                    <div class="w-10 h-10 rounded-full bg-[#00a884] text-[#111b21] font-bold flex items-center justify-center text-lg uppercase shadow bg-cover bg-center" id="user-avatar">?</div>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-sm text-main flex items-center gap-1" id="user-display-name">
+                <div class="flex items-center gap-3 cursor-pointer p-1 rounded hover:bg-input-field transition flex-1 min-w-0" id="my-profile-header-trigger">
+                    <div class="w-10 h-10 rounded-full bg-[#00a884] text-[#111b21] font-bold flex items-center justify-center text-lg uppercase shadow bg-cover bg-center flex-shrink-0" id="user-avatar">?</div>
+                    <div class="flex flex-col min-w-0 flex-1">
+                        <span class="font-bold text-sm text-main flex items-center gap-1 truncate" id="user-display-name">
                             Loading... <i class="fa-solid fa-gear text-[10px] text-sub"></i>
                         </span>
-                        <span class="text-[11px] text-sub" id="user-phone">Loading...</span>
+                        <span class="text-[11px] text-sub truncate" id="user-phone">Loading...</span>
                     </div>
                 </div>
-                <button id="btn-logout" class="text-sub hover:text-[#ea0038] text-lg transition p-2">
+                <button id="btn-logout" class="text-sub hover:text-[#ea0038] text-lg transition p-2 flex-shrink-0">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
@@ -323,21 +323,21 @@
             <div class="chat-bg" id="chat-wallpaper-canvas"></div>
             
             <div class="bg-panel-header h-[60px] p-4 flex items-center justify-between border-b border-custom z-10 shadow-md flex-shrink-0">
-                <div class="flex items-center gap-3">
-                    <button id="btn-close-chat" class="md:hidden text-sub hover:text-main text-lg mr-1 py-1 px-2">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <button id="btn-close-chat" class="md:hidden text-sub hover:text-main text-lg mr-1 py-1 px-2 flex-shrink-0">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <div class="w-10 h-10 bg-[#00a884] text-[#111b21] rounded-full flex items-center justify-center text-base font-bold shadow uppercase bg-cover bg-center" id="active-chat-avatar">
+                    <div class="w-10 h-10 bg-[#00a884] text-[#111b21] rounded-full flex items-center justify-center text-base font-bold shadow uppercase bg-cover bg-center flex-shrink-0" id="active-chat-avatar">
                         <i class="fa-solid fa-user"></i>
                     </div>
-                    <div>
-                        <h3 class="font-semibold text-main text-base" id="active-chat-title">Select a Contact</h3>
-                        <p class="text-xs text-[#00a884] font-medium" id="header-typing-status">End-to-End Private</p>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-semibold text-main text-base truncate" id="active-chat-title">Select a Contact</h3>
+                        <p class="text-xs text-[#00a884] font-medium truncate" id="header-typing-status">End-to-End Private</p>
                     </div>
                 </div>
                 
                 <!-- 3-DOT OPTIONS DROPDOWN INTERFACE -->
-                <div class="relative inline-block text-left z-30">
+                <div class="relative inline-block text-left z-30 flex-shrink-0">
                     <button id="chat-options-menu-btn" class="hidden text-sub hover:text-main p-2 rounded-full hover:bg-input-field transition duration-150 text-xl focus:outline-none">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                     </button>
