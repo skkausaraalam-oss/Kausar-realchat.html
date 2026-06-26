@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kausar Private Hub</title>
     
-    <!-- WEB APP MANIFEST FOR PWA INSTALLATION (UPDATED WITH WHATSAPP STYLE HOME SCREEN ICON) -->
     <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Kausar%20Private%20Hub%22%2C%22short_name%22%3A%22KausarHub%22%2C%22start_url%22%3A%22.%2Findex.html%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23111b21%22%2C%22theme_color%22%3A%22%2300a884%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F733%2F733585.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
     <meta name="theme-color" content="#00a884">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -113,7 +112,6 @@
 </head>
 <body class="dark-mode dynamic-height flex items-center justify-center overflow-hidden fixed inset-0">
 
-    <!-- REAL SPLASH LOADING SCREEN -->
     <div id="app-splash-screen" class="fixed inset-0 bg-[#111b21] z-[100] flex flex-col items-center justify-center select-none">
         <div class="flex flex-col items-center animate-pulse">
             <svg class="king-logo-svg mb-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -131,10 +129,8 @@
         </div>
     </div>
 
-    <!-- GAJAB IN-APP IMAGE PREVIEW MODAL (WHITE TAB FIXED) -->
     <div id="image-viewer-modal" class="hidden fixed inset-0 bg-black/90 z-[120] flex flex-col justify-between p-4 transition-all duration-300">
         <div class="w-full flex justify-between items-center z-50 bg-gradient-to-b from-black/60 to-transparent p-2 absolute top-0 left-0">
-            <!-- Downloader & Save Button -->
             <button id="btn-download-viewed-image" class="bg-[#00a884] hover:bg-[#008f72] text-[#111b21] font-bold text-sm py-2 px-4 rounded-lg flex items-center gap-2 transition shadow-md m-2">
                 <i class="fa-solid fa-circle-down text-base"></i> Save to Gallery
             </button>
@@ -147,7 +143,25 @@
         </div>
     </div>
 
-    <!-- APP INSTALL PROMPT BUTTON -->
+    <div id="custom-delete-popup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[110] p-4 animate-fade-in">
+        <div class="bg-[#222e35] border border-[#374248] w-full max-w-xs rounded-xl p-5 shadow-2xl text-center">
+            <h4 class="text-white font-bold text-base mb-4 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-trash-can text-red-500"></i> Delete Message?
+            </h4>
+            <div class="flex flex-col gap-2">
+                <button id="btn-delete-for-me" class="w-full bg-[#2a3942] hover:bg-[#374248] text-[#00a884] font-semibold py-2.5 rounded-lg text-sm transition">
+                    Delete for Me
+                </button>
+                <button id="btn-delete-for-everyone" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg text-sm transition">
+                    Delete for Everyone
+                </button>
+                <button id="btn-cancel-delete-popup" class="w-full bg-transparent hover:bg-[#2a3942] text-gray-400 font-medium py-2 rounded-lg text-xs mt-1 transition">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="pwa-install-banner" class="hidden fixed bottom-4 left-4 right-4 bg-[#202c33] border border-[#00a884] p-3 rounded-lg z-50 flex items-center justify-between text-white shadow-2xl">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-mobile-screen-button text-[#00a884] text-xl"></i>
@@ -159,7 +173,6 @@
         <button id="btn-pwa-install" class="whatsapp-green hover:bg-[#008f72] text-[#111b21] font-bold py-1.5 px-3 rounded text-xs transition">Install</button>
     </div>
 
-    <!-- LOG IN CONTAINER -->
     <div id="auth-container" class="w-full max-w-md p-6 bg-[#222e35] rounded-lg shadow-2xl border border-[#374248] z-10 m-4">
         <div class="text-center mb-6">
             <div class="flex items-center justify-center mb-2">
@@ -194,7 +207,6 @@
         </div>
     </div>
 
-    <!-- PROFILE SETUP POPUP -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
         <div class="bg-[#222e35] border border-[#374248] w-full max-w-sm rounded-xl p-6 shadow-2xl">
             <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
@@ -208,7 +220,6 @@
         </div>
     </div>
 
-    <!-- EDIT PROFILE & ADVANCED THEME MODAL -->
     <div id="edit-profile-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
         <div class="bg-[#222e35] border border-[#374248] w-full max-w-md rounded-xl p-6 shadow-2xl relative text-white max-h-[90vh] overflow-y-auto">
             <button id="btn-close-profile-modal" class="absolute top-4 right-4 text-[#8696a0] hover:text-white text-lg">
@@ -277,7 +288,6 @@
         </div>
     </div>
 
-    <!-- STATUS VIEWER OVERLAY -->
     <div id="status-viewer-modal" class="hidden fixed inset-0 bg-black z-50 flex flex-col justify-between">
         <div class="absolute top-2 left-2 right-2 flex gap-1 z-20">
             <div id="status-progress-bar" class="h-1 bg-[#00a884] w-0 transition-all duration-[5000ms] linear rounded"></div>
@@ -297,10 +307,8 @@
         <div id="status-media-content-holder" class="w-full h-full flex items-center justify-center p-2 bg-black select-none"></div>
     </div>
 
-    <!-- MAIN INTERFACE -->
     <div id="chat-container" class="hidden w-full h-full flex z-10 overflow-hidden">
         
-        <!-- SIDEBAR PANEL -->
         <div id="sidebar-panel" class="w-full md:w-[35%] bg-sidebar border-r border-custom flex flex-col h-full z-20">
             <div class="bg-panel-header h-[60px] p-4 flex items-center justify-between shadow-sm flex-shrink-0">
                 <div class="flex items-center gap-3 cursor-pointer p-1 rounded hover:bg-input-field transition flex-1 min-w-0" id="my-profile-header-trigger">
@@ -317,7 +325,6 @@
                 </button>
             </div>
 
-            <!-- TABS -->
             <div class="flex bg-panel-header border-b border-custom text-center text-sm font-semibold select-none flex-shrink-0">
                 <button id="tab-chats-btn" class="flex-1 py-3 text-[#00a884] border-b-2 border-[#00a884] uppercase tracking-wide transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-message"></i> Chats
@@ -327,7 +334,6 @@
                 </button>
             </div>
             
-            <!-- CHATS TAB -->
             <div id="chats-tab-content" class="flex flex-1 flex-col overflow-hidden">
                 <div class="p-2.5 bg-sidebar flex-shrink-0">
                     <span class="text-[11px] font-bold tracking-wider text-sub uppercase block pl-1">Active Chat Logs</span>
@@ -337,7 +343,6 @@
                 </div>
             </div>
 
-            <!-- STATUS TAB -->
             <div id="status-tab-content" class="hidden flex-1 flex-col overflow-hidden">
                 <div class="p-4 flex items-center justify-between border-b border-custom bg-panel-header/30">
                     <div class="flex items-center gap-3">
@@ -364,7 +369,6 @@
             </div>
         </div>
 
-        <!-- CHAT PANEL -->
         <div id="chat-panel" class="hidden md:flex flex-1 flex-col h-full bg-chat-area relative z-10 overflow-hidden">
             <div class="chat-bg" id="chat-wallpaper-canvas"></div>
             
@@ -422,9 +426,9 @@
         window.globalUnreadStore = {}; 
         window.statusTimerTracker = null;
         window.ADMIN_OWNER_NUMBER = "+917377535927"; 
+        window.pendingDeleteMessageId = ""; // Track context id
     </script>
 
-    <!-- FIREBASE LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -447,7 +451,7 @@
         let blinkInterval = null;
         let base64ProfileDPHolder = "";
 
-        // NEW IN-APP IMAGE VIEWER OPEN LOGIC (WHITE SCREEN BOX REMOVED)
+        // IN-APP IMAGE viewer
         window.openInAppImageViewer = function(base64Src) {
             const modal = document.getElementById('image-viewer-modal');
             const imgTarget = document.getElementById('image-viewer-main-src');
@@ -455,18 +459,14 @@
             modal.classList.remove('hidden');
         };
 
-        // CLOSE VIEWER
         document.getElementById('btn-close-image-viewer').addEventListener('click', () => {
             document.getElementById('image-viewer-modal').classList.add('hidden');
             document.getElementById('image-viewer-main-src').src = "";
         });
 
-        // DOWNLOAD DIRECTLY TO GALLERY FUNCTION
         document.getElementById('btn-download-viewed-image').addEventListener('click', () => {
             const imgData = document.getElementById('image-viewer-main-src').src;
             if(!imgData) return;
-            
-            // Trigger automatic device download sequence
             const downloadLink = document.createElement('a');
             downloadLink.href = imgData;
             downloadLink.download = `Kausar_Hub_${Date.now()}.jpg`;
@@ -487,6 +487,44 @@
                 }
             }
         };
+
+        // NEW GAJAB DIALOG FOR MESSAGES: DELETE FOR ME & DELETE FOR EVERYONE
+        window.openDeleteOptionsModal = function(msgId) {
+            window.pendingDeleteMessageId = msgId;
+            document.getElementById('custom-delete-popup-modal').classList.remove('hidden');
+        };
+
+        // CLOSE DELETE MODAL
+        document.getElementById('btn-cancel-delete-popup').addEventListener('click', () => {
+            document.getElementById('custom-delete-popup-modal').classList.add('hidden');
+            window.pendingDeleteMessageId = "";
+        });
+
+        // LOGIC 1: DELETE FOR ME (Local Storage tracking)
+        document.getElementById('btn-delete-for-me').addEventListener('click', () => {
+            if (!window.pendingDeleteMessageId) return;
+            let hiddenList = JSON.parse(localStorage.getItem('kausar_deleted_for_me') || '[]');
+            if (!hiddenList.includes(window.pendingDeleteMessageId)) {
+                hiddenList.push(window.pendingDeleteMessageId);
+                localStorage.setItem('kausar_deleted_for_me', JSON.stringify(hiddenList));
+            }
+            document.getElementById('custom-delete-popup-modal').classList.add('hidden');
+            window.pendingDeleteMessageId = "";
+            // Instant visual refresh
+            if(window.selectedTargetUser) streamPrivateMessagesBetweenUsers();
+        });
+
+        // LOGIC 2: DELETE FOR EVERYONE (Firebase Cloud server clean)
+        document.getElementById('btn-delete-for-everyone').addEventListener('click', async () => {
+            if (!window.pendingDeleteMessageId) return;
+            try {
+                await deleteDoc(doc(db, "whatsapp_chats", window.pendingDeleteMessageId));
+            } catch(err) {
+                alert("Server se delete karne me error aaya.");
+            }
+            document.getElementById('custom-delete-popup-modal').classList.add('hidden');
+            window.pendingDeleteMessageId = "";
+        });
 
         // PWA APP INSTALL LOGIC
         let deferredPrompt;
@@ -534,17 +572,10 @@
                     const canvas = document.createElement('canvas');
                     let width = img.width;
                     let height = img.height;
-
                     if (width > height) {
-                        if (width > maxWidth) {
-                            height *= maxWidth / width;
-                            width = maxWidth;
-                        }
+                        if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
                     } else {
-                        if (height > maxHeight) {
-                            width *= maxHeight / height;
-                            height = maxHeight;
-                        }
+                        if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
                     }
                     canvas.width = width;
                     canvas.height = height;
@@ -559,12 +590,10 @@
         function initAppThemeEngine() {
             const savedTheme = localStorage.getItem('kh_app_theme') || 'dark-mode';
             document.body.className = `dynamic-height flex items-center justify-center overflow-hidden fixed inset-0 ${savedTheme}`;
-            
             const savedWallpaper = localStorage.getItem('kh_custom_wallpaper');
             const canvas = document.getElementById('chat-wallpaper-canvas');
             const panel = document.getElementById('chat-panel');
             const removeBtn = document.getElementById('btn-remove-wallpaper');
-
             if(savedWallpaper) {
                 canvas.style.backgroundImage = `url('${savedWallpaper}')`;
                 panel.classList.add('custom-wallpaper-active');
@@ -582,14 +611,11 @@
             const avatarField = document.getElementById('viewer-status-avatar');
             const contentHolder = document.getElementById('status-media-content-holder');
             const progressBar = document.getElementById('status-progress-bar');
-
             nameField.innerText = username;
             if(avatarData) { avatarField.style.backgroundImage = `url('${avatarData}')`; } 
             else { avatarField.style.backgroundImage = "none"; }
-
             contentHolder.innerHTML = "";
             progressBar.style.width = '0%';
-
             if(statusStoryObj.mediaType === 'video') {
                 const videoEl = document.createElement('video');
                 videoEl.src = statusStoryObj.mediaData;
@@ -603,10 +629,8 @@
                 imgEl.className = "max-w-full max-h-full object-contain rounded shadow-lg";
                 contentHolder.appendChild(imgEl);
             }
-
             modal.classList.remove('hidden');
             setTimeout(() => { progressBar.style.width = '100%'; }, 50);
-
             window.statusTimerTracker = setTimeout(() => {
                 modal.classList.add('hidden');
                 contentHolder.innerHTML = "";
@@ -615,7 +639,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initAppThemeEngine();
-
             setTimeout(() => {
                 const splash = document.getElementById('app-splash-screen');
                 if(splash) {
@@ -626,15 +649,8 @@
 
             const menuBtn = document.getElementById('chat-options-menu-btn');
             const dropdownBox = document.getElementById('chat-options-dropdown');
-            
-            menuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownBox.classList.toggle('hidden');
-            });
-
-            document.addEventListener('click', () => {
-                dropdownBox.classList.add('hidden');
-            });
+            menuBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdownBox.classList.toggle('hidden'); });
+            document.addEventListener('click', () => { dropdownBox.classList.add('hidden'); });
 
             document.getElementById('my-profile-header-trigger').addEventListener('click', async () => {
                 const mySnap = await getDoc(doc(db, "registered_users", window.activeUserPhone));
@@ -642,14 +658,11 @@
                     const currentData = mySnap.data();
                     document.getElementById('edit-profile-name-input').value = currentData.name || "";
                     base64ProfileDPHolder = currentData.dp || "";
-                    
                     const previewBox = document.getElementById('modal-dp-preview');
                     if(base64ProfileDPHolder) {
-                        previewBox.style.backgroundImage = `url('${base64ProfileDPHolder}')`;
-                        previewBox.innerText = "";
+                        previewBox.style.backgroundImage = `url('${base64ProfileDPHolder}')`; previewBox.innerText = "";
                     } else {
-                        previewBox.style.backgroundImage = "none";
-                        previewBox.innerText = (currentData.name || "?").substring(0, 1).toUpperCase();
+                        previewBox.style.backgroundImage = "none"; previewBox.innerText = (currentData.name || "?").substring(0, 1).toUpperCase();
                     }
                     document.getElementById('edit-profile-modal').classList.remove('hidden');
                 }
@@ -664,10 +677,7 @@
                 });
             });
 
-            document.getElementById('btn-trigger-wallpaper').addEventListener('click', () => {
-                document.getElementById('custom-wallpaper-input').click();
-            });
-
+            document.getElementById('btn-trigger-wallpaper').addEventListener('click', () => { document.getElementById('custom-wallpaper-input').click(); });
             document.getElementById('custom-wallpaper-input').addEventListener('change', function() {
                 const file = this.files[0];
                 if(!file) return;
@@ -691,31 +701,20 @@
             });
 
             document.getElementById('tab-chats-btn').addEventListener('click', function() {
-                this.classList.add('text-[#00a884]', 'border-[#00a884]');
-                this.classList.remove('text-sub', 'border-transparent');
-                document.getElementById('tab-status-btn').classList.remove('text-[#00a884]', 'border-[#00a884]');
-                document.getElementById('tab-status-btn').classList.add('text-sub', 'border-transparent');
-                document.getElementById('chats-tab-content').classList.remove('hidden');
-                document.getElementById('status-tab-content').classList.add('hidden');
+                this.classList.add('text-[#00a884]', 'border-[#00a884]'); this.classList.remove('text-sub', 'border-transparent');
+                document.getElementById('tab-status-btn').classList.remove('text-[#00a884]', 'border-[#00a884]'); document.getElementById('tab-status-btn').classList.add('text-sub', 'border-transparent');
+                document.getElementById('chats-tab-content').classList.remove('hidden'); document.getElementById('status-tab-content').classList.add('hidden');
             });
 
             document.getElementById('tab-status-btn').addEventListener('click', function() {
-                this.classList.add('text-[#00a884]', 'border-[#00a884]');
-                this.classList.remove('text-sub', 'border-transparent');
-                document.getElementById('tab-chats-btn').classList.remove('text-[#00a884]', 'border-[#00a884]');
-                document.getElementById('tab-chats-btn').classList.add('text-sub', 'border-transparent');
-                document.getElementById('status-tab-content').classList.remove('hidden');
-                document.getElementById('chats-tab-content').classList.add('hidden');
+                this.classList.add('text-[#00a884]', 'border-[#00a884]'); this.classList.remove('text-sub', 'border-transparent');
+                document.getElementById('tab-chats-btn').classList.remove('text-[#00a884]', 'border-[#00a884]'); document.getElementById('tab-chats-btn').classList.add('text-sub', 'border-transparent');
+                document.getElementById('status-tab-content').classList.remove('hidden'); document.getElementById('chats-tab-content').classList.add('hidden');
                 syncStatusStoriesStream();
             });
 
-            document.getElementById('btn-trigger-status-upload').addEventListener('click', () => {
-                document.getElementById('status-media-file-input').click();
-            });
-
-            document.getElementById('status-media-file-input').addEventListener('change', function() {
-                uploadUserStatusStory(this);
-            });
+            document.getElementById('btn-trigger-status-upload').addEventListener('click', () => { document.getElementById('status-media-file-input').click(); });
+            document.getElementById('status-media-file-input').addEventListener('change', function() { uploadUserStatusStory(this); });
 
             document.getElementById('btn-close-status-viewer').addEventListener('click', () => {
                 clearTimeout(window.statusTimerTracker);
@@ -725,10 +724,7 @@
 
             document.getElementById('btn-phone-next').addEventListener('click', () => {
                 const num = document.getElementById('phone-number').value.trim();
-                if (num.length !== 10 || isNaN(num)) {
-                    alert("Please type a valid 10-digit mobile number.");
-                    return;
-                }
+                if (num.length !== 10 || isNaN(num)) { alert("Please type a valid 10-digit mobile number."); return; }
                 window.activeUserPhone = "+91" + num;
                 document.getElementById('phone-stage').classList.add('hidden');
                 document.getElementById('otp-stage').classList.remove('hidden');
@@ -739,107 +735,70 @@
                 if (pin === "786055") {
                     localStorage.setItem('kausar_chat_session', window.activeUserPhone);
                     document.getElementById('auth-container').classList.add('hidden');
-                    
                     const userCheckSnap = await getDoc(doc(db, "registered_users", window.activeUserPhone));
                     if(!userCheckSnap.exists()) {
                         await setDoc(doc(db, "registered_users", window.activeUserPhone), {
-                            phone: window.activeUserPhone,
-                            name: "User_" + window.activeUserPhone.substring(7),
-                            dp: "",
-                            joinedAt: serverTimestamp()
+                            phone: window.activeUserPhone, name: "User_" + window.activeUserPhone.substring(7), dp: "", joinedAt: serverTimestamp()
                         });
                     }
                     checkProfileSetupRequirement();
-                } else {
-                    alert("Incorrect Security PIN. Access Denied.");
-                }
+                } else { alert("Incorrect Security PIN. Access Denied."); }
             });
 
             document.getElementById('btn-save-profile').addEventListener('click', async () => {
                 const chosenName = document.getElementById('profile-name-input').value.trim();
-                if(!chosenName || chosenName.length < 2) {
-                    alert("Please enter a valid name.");
-                    return;
-                }
+                if(!chosenName || chosenName.length < 2) { alert("Please enter a valid name."); return; }
                 document.getElementById('profile-modal').classList.add('hidden');
                 await setDoc(doc(db, "registered_users", window.activeUserPhone), {
-                    phone: window.activeUserPhone,
-                    name: chosenName,
-                    dp: "",
-                    joinedAt: serverTimestamp()
+                    phone: window.activeUserPhone, name: chosenName, dp: "", joinedAt: serverTimestamp()
                 }, { merge: true });
                 startPrivateSystem();
             });
 
-            document.getElementById('btn-close-profile-modal').addEventListener('click', () => {
-                document.getElementById('edit-profile-modal').classList.add('hidden');
-            });
-
-            document.getElementById('dp-upload-trigger').addEventListener('click', () => {
-                document.getElementById('profile-dp-file-input').click();
-            });
+            document.getElementById('btn-close-profile-modal').addEventListener('click', () => { document.getElementById('edit-profile-modal').classList.add('hidden'); });
+            document.getElementById('dp-upload-trigger').addEventListener('click', () => { document.getElementById('profile-dp-file-input').click(); });
 
             document.getElementById('profile-dp-file-input').addEventListener('change', function() {
-                const file = this.files[0];
-                if (!file) return;
+                const file = this.files[0]; if (!file) return;
                 compressAndProcessImage(file, 400, 400, 0.7, function(compressedBase64) {
                     base64ProfileDPHolder = compressedBase64;
                     const previewBox = document.getElementById('modal-dp-preview');
-                    previewBox.style.backgroundImage = `url('${base64ProfileDPHolder}')`;
-                    previewBox.innerText = "";
+                    previewBox.style.backgroundImage = `url('${base64ProfileDPHolder}')`; previewBox.innerText = "";
                 });
             });
 
             document.getElementById('btn-update-profile').addEventListener('click', async () => {
                 const upName = document.getElementById('edit-profile-name-input').value.trim();
-                if(!upName || upName.length < 2) {
-                    alert("Naam kam se kam 2 letters ka hona chahiye.");
-                    return;
-                }
+                if(!upName || upName.length < 2) { alert("Naam kam se kam 2 letters ka hona chahiye."); return; }
                 try {
-                    await updateDoc(doc(db, "registered_users", window.activeUserPhone), {
-                        name: upName,
-                        dp: base64ProfileDPHolder
-                    });
+                    await updateDoc(doc(db, "registered_users", window.activeUserPhone), { name: upName, dp: base64ProfileDPHolder });
                     document.getElementById('edit-profile-modal').classList.add('hidden');
                     alert("Settings saved successfully!");
                 } catch(err) { alert("Update failed."); }
             });
 
             document.getElementById('btn-close-chat').addEventListener('click', () => {
-                document.getElementById('sidebar-panel').classList.remove('hidden');
-                document.getElementById('sidebar-panel').classList.add('w-full');
-                document.getElementById('chat-panel').classList.add('hidden');
-                document.getElementById('chat-panel').classList.remove('flex');
-                document.getElementById('chat-options-menu-btn').classList.add('hidden');
-                window.selectedTargetUser = "";
+                document.getElementById('sidebar-panel').classList.remove('hidden'); document.getElementById('sidebar-panel').classList.add('w-full');
+                document.getElementById('chat-panel').classList.add('hidden'); document.getElementById('chat-panel').classList.remove('flex');
+                document.getElementById('chat-options-menu-btn').classList.add('hidden'); window.selectedTargetUser = "";
                 if(globalUnsubscribe) globalUnsubscribe();
                 listenToAllIncomingUnreadMessages();
             });
 
-            document.getElementById('btn-trigger-media').addEventListener('click', () => {
-                document.getElementById('media-attachment-input').click();
-            });
-
-            document.getElementById('media-attachment-input').addEventListener('change', function() {
-                processAndSendPhoto(this);
-            });
+            document.getElementById('btn-trigger-media').addEventListener('click', () => { document.getElementById('media-attachment-input').click(); });
+            document.getElementById('media-attachment-input').addEventListener('change', function() { processAndSendPhoto(this); });
 
             document.getElementById('btn-send-message').addEventListener('click', () => { dispatchPrivateMessage(); });
             document.getElementById('message-field').addEventListener('keydown', (e) => { if(e.key === 'Enter') dispatchPrivateMessage(); });
             document.getElementById('btn-logout').addEventListener('click', () => { triggerAppLogOut(); });
             
             document.getElementById('btn-dropdown-clear-chat').addEventListener('click', async (e) => {
-                e.stopPropagation();
-                dropdownBox.classList.add('hidden'); 
+                e.stopPropagation(); dropdownBox.classList.add('hidden'); 
                 if(confirm("Kya aap is chat ke saare messages SERVER se PERMANENTLY delete karna chahte hain?")) {
                     try {
                         const q1 = query(collection(db, "whatsapp_chats"), where("sender", "==", window.activeUserPhone), where("receiver", "==", window.selectedTargetUser));
                         const q2 = query(collection(db, "whatsapp_chats"), where("sender", "==", window.selectedTargetUser), where("receiver", "==", window.activeUserPhone));
-                        
-                        const snap1 = await getDocs(q1);
-                        const snap2 = await getDocs(q2);
-                        
+                        const snap1 = await getDocs(q1); const snap2 = await getDocs(q2);
                         snap1.forEach(async (messageDoc) => { await deleteDoc(doc(db, "whatsapp_chats", messageDoc.id)); });
                         snap2.forEach(async (messageDoc) => { await deleteDoc(doc(db, "whatsapp_chats", messageDoc.id)); });
                         alert("Puri chat server aur dono mobile se permanently delete ho gayi!");
@@ -848,22 +807,15 @@
             });
 
             const savedSession = localStorage.getItem('kausar_chat_session');
-            if (savedSession) {
-                window.activeUserPhone = savedSession;
-                checkProfileSetupRequirement();
-            }
+            if (savedSession) { window.activeUserPhone = savedSession; checkProfileSetupRequirement(); }
         });
 
         async function uploadUserStatusStory(inputElement) {
-            const file = inputElement.files[0];
-            if(!file) return;
+            const file = inputElement.files[0]; if(!file) return;
             if(file.size > 10 * 1024 * 1024) { alert("File size 10MB se zyada hai!"); return; }
-
             const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
             if(mediaType === 'image') {
-                compressAndProcessImage(file, 1280, 1280, 0.6, async function(compressedDataUrl) {
-                    await saveStoryToFirebase(compressedDataUrl, 'image');
-                });
+                compressAndProcessImage(file, 1280, 1280, 0.6, async function(compressedDataUrl) { await saveStoryToFirebase(compressedDataUrl, 'image'); });
             } else {
                 if(file.size > 2.5 * 1024 * 1024) { alert("Videos limits under 2.5MB required."); return; }
                 const reader = new FileReader();
@@ -875,15 +827,10 @@
         async function saveStoryToFirebase(finalDataStream, type) {
             try {
                 await addDoc(collection(db, "whatsapp_status_stories"), {
-                    senderPhone: window.activeUserPhone,
-                    senderName: window.cachedUsersNames[window.activeUserPhone] || window.activeUserPhone,
-                    mediaData: finalDataStream, 
-                    mediaType: type,
-                    timestamp: serverTimestamp(),
-                    createdAtMillis: Date.now()
+                    senderPhone: window.activeUserPhone, senderName: window.cachedUsersNames[window.activeUserPhone] || window.activeUserPhone,
+                    mediaData: finalDataStream, mediaType: type, timestamp: serverTimestamp(), createdAtMillis: Date.now()
                 });
-                alert("Status uploaded successfully!");
-                syncStatusStoriesStream();
+                alert("Status uploaded successfully!"); syncStatusStoriesStream();
             } catch(err) { alert("Upload failed."); }
         }
 
@@ -893,28 +840,21 @@
                 const streamContainer = document.getElementById('status-stream-list-box');
                 streamContainer.innerHTML = "";
                 const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
-                let validStoriesTracker = 0;
-                let uniqueUsersMap = {};
-
+                let validStoriesTracker = 0; let uniqueUsersMap = {};
                 snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if(data.createdAtMillis < twentyFourHoursAgo) return;
+                    const data = doc.data(); if(data.createdAtMillis < twentyFourHoursAgo) return;
                     if(!uniqueUsersMap[data.senderPhone]) uniqueUsersMap[data.senderPhone] = data;
                 });
-
                 Object.keys(uniqueUsersMap).forEach((userPhone) => {
-                    const statusData = uniqueUsersMap[userPhone];
-                    validStoriesTracker++;
+                    const statusData = uniqueUsersMap[userPhone]; validStoriesTracker++;
                     const row = document.createElement('div');
                     row.className = "flex items-center gap-3.5 p-3.5 cursor-pointer hover:bg-panel-header/50 transition";
                     const senderDisplayName = window.cachedUsersNames[userPhone] || statusData.senderName;
                     const senderAvatarData = window.cachedUsersDPs[userPhone] || "";
                     const initial = senderDisplayName.substring(0, 1).toUpperCase();
-
                     let avatarCircleLayout = senderAvatarData ? 
                         `<div class="w-12 h-12 rounded-full bg-cover bg-center status-ring shadow" style="background-image: url('${senderAvatarData}')"></div>` : 
                         `<div class="w-12 h-12 rounded-full bg-panel-header text-[#00a884] flex items-center justify-center font-bold text-base uppercase status-ring border border-field shadow">${initial}</div>`;
-
                     row.innerHTML = `
                         ${avatarCircleLayout}
                         <div class="flex-1 min-w-0">
@@ -928,46 +868,24 @@
             });
         }
 
-        function triggerAppLogOut() {
-            localStorage.clear();
-            window.location.reload();
-        }
-
-        window.deleteMessagePermanently = async function(msgId) {
-            if(confirm("Kya aap is message ko SERVER se permanently delete karna chahte hain?")) {
-                try { await deleteDoc(doc(db, "whatsapp_chats", msgId)); } catch(err) { alert("Message delete karne me problem aayi."); }
-            }
-        };
+        function triggerAppLogOut() { localStorage.clear(); window.location.reload(); }
 
         window.openTargetChatWindow = function(targetUserPhone) {
-            window.selectedTargetUser = targetUserPhone;
-            lastMessageCount = 0; 
-            
+            window.selectedTargetUser = targetUserPhone; lastMessageCount = 0; 
             let checkpoints = JSON.parse(localStorage.getItem('kausar_read_checkpoints') || '{}');
-            checkpoints[targetUserPhone] = Date.now();
-            localStorage.setItem('kausar_read_checkpoints', JSON.stringify(checkpoints));
-            
-            document.getElementById('sidebar-panel').classList.add('hidden');
-            document.getElementById('sidebar-panel').classList.remove('w-full');
-            const chatPanel = document.getElementById('chat-panel');
-            chatPanel.classList.remove('hidden');
-            chatPanel.classList.add('flex');
-
+            checkpoints[targetUserPhone] = Date.now(); localStorage.setItem('kausar_read_checkpoints', JSON.stringify(checkpoints));
+            document.getElementById('sidebar-panel').classList.add('hidden'); document.getElementById('sidebar-panel').classList.remove('w-full');
+            const chatPanel = document.getElementById('chat-panel'); chatPanel.classList.remove('hidden'); chatPanel.classList.add('flex');
             const mappedTargetName = window.cachedUsersNames[targetUserPhone] || targetUserPhone;
             const mappedTargetDP = window.cachedUsersDPs[targetUserPhone] || "";
             document.getElementById('active-chat-title').innerText = mappedTargetName;
-            
             const chatHeaderAvatar = document.getElementById('active-chat-avatar');
             if(mappedTargetDP) { chatHeaderAvatar.style.backgroundImage = `url('${mappedTargetDP}')`; chatHeaderAvatar.innerText = ""; } 
             else { chatHeaderAvatar.style.backgroundImage = "none"; chatHeaderAvatar.innerText = mappedTargetName.substring(0, 1).toUpperCase(); }
-            
-            document.getElementById('input-bar-container').classList.remove('hidden');
-            document.getElementById('input-bar-container').classList.add('flex');
+            document.getElementById('input-bar-container').classList.remove('hidden'); document.getElementById('input-bar-container').classList.add('flex');
             document.getElementById('chat-options-menu-btn').classList.remove('hidden');
-
             if(globalUnsubscribe) globalUnsubscribe();
-            streamPrivateMessagesBetweenUsers();
-            listenToAllIncomingUnreadMessages();
+            streamPrivateMessagesBetweenUsers(); listenToAllIncomingUnreadMessages();
         };
 
         async function checkProfileSetupRequirement() {
@@ -977,8 +895,7 @@
                     const data = snapshot.data();
                     document.getElementById('user-display-name').innerHTML = `${data.name || 'User'} <i class="fa-solid fa-gear text-[10px] text-sub"></i>`;
                     document.getElementById('user-phone').innerText = window.activeUserPhone;
-                    const avatarBox = document.getElementById('user-avatar');
-                    const myStatusAvatar = document.getElementById('my-status-avatar-preview');
+                    const avatarBox = document.getElementById('user-avatar'); const myStatusAvatar = document.getElementById('my-status-avatar-preview');
                     if(data.dp) {
                         avatarBox.style.backgroundImage = `url('${data.dp}')`; avatarBox.innerText = "";
                         myStatusAvatar.style.backgroundImage = `url('${data.dp}')`; myStatusAvatar.innerText = "";
@@ -988,96 +905,59 @@
                     }
                 }
             });
-
             const userSnap = await getDoc(doc(db, "registered_users", window.activeUserPhone));
             if (userSnap.exists() && userSnap.data().name) { startPrivateSystem(); } 
-            else {
-                document.getElementById('auth-container').classList.add('hidden');
-                document.getElementById('profile-modal').classList.remove('hidden');
-            }
+            else { document.getElementById('auth-container').classList.add('hidden'); document.getElementById('profile-modal').classList.remove('hidden'); }
         }
 
         function startPrivateSystem() {
-            document.getElementById('auth-container').classList.add('hidden');
-            document.getElementById('chat-container').classList.remove('hidden');
-            listenToAllIncomingUnreadMessages();
-            syncConnectedUsersList();
+            document.getElementById('auth-container').classList.add('hidden'); document.getElementById('chat-container').classList.remove('hidden');
+            listenToAllIncomingUnreadMessages(); syncConnectedUsersList();
         }
 
         function listenToAllIncomingUnreadMessages() {
             const unreadQuery = query(collection(db, "whatsapp_chats"), orderBy("timestamp", "asc"));
             onSnapshot(unreadQuery, (snapshot) => {
-                let countsTracker = {};
-                let totalUnreadMessagesSum = 0;
+                let countsTracker = {}; let totalUnreadMessagesSum = 0;
                 const checkpoints = JSON.parse(localStorage.getItem('kausar_read_checkpoints') || '{}');
-
                 snapshot.forEach((messageDoc) => {
                     const data = messageDoc.data();
                     if(data.receiver === window.activeUserPhone) {
-                        const sender = data.sender;
-                        const lastReadPoint = checkpoints[sender] || 0;
+                        const sender = data.sender; const lastReadPoint = checkpoints[sender] || 0;
                         const msgTimeMillis = data.createdAtMillis || (data.timestamp ? data.timestamp.toDate().getTime() : Date.now());
-                        if(msgTimeMillis > lastReadPoint) { 
-                            countsTracker[sender] = (countsTracker[sender] || 0) + 1;
-                            totalUnreadMessagesSum++;
-                        }
+                        if(msgTimeMillis > lastReadPoint) { countsTracker[sender] = (countsTracker[sender] || 0) + 1; totalUnreadMessagesSum++; }
                     }
                 });
-                window.globalUnreadStore = countsTracker;
-                
-                updateAppBadgeCounter(totalUnreadMessagesSum);
-                refreshConnectedUsersUIIcons();
+                window.globalUnreadStore = countsTracker; updateAppBadgeCounter(totalUnreadMessagesSum); refreshConnectedUsersUIIcons();
             });
         }
 
         function syncConnectedUsersList() {
-            onSnapshot(collection(db, "registered_users"), (snapshot) => {
-                window.currentUsersSnapshotCache = snapshot;
-                refreshConnectedUsersUIIcons();
-            });
+            onSnapshot(collection(db, "registered_users"), (snapshot) => { window.currentUsersSnapshotCache = snapshot; refreshConnectedUsersUIIcons(); });
         }
 
         function refreshConnectedUsersUIIcons() {
             if(!window.currentUsersSnapshotCache) return;
-            const listContainer = document.getElementById('users-list-box');
-            listContainer.innerHTML = "";
-            let totalCount = 0;
-
+            const listContainer = document.getElementById('users-list-box'); listContainer.innerHTML = ""; let totalCount = 0;
             window.currentUsersSnapshotCache.forEach((userDoc) => {
-                const targetPhone = userDoc.id;
-                const targetData = userDoc.data();
+                const targetPhone = userDoc.id; const targetData = userDoc.data();
                 if(targetPhone === window.activeUserPhone) return; 
-                
-                window.cachedUsersNames[targetPhone] = targetData.name || targetPhone;
-                window.cachedUsersDPs[targetPhone] = targetData.dp || "";
-                totalCount++;
-
+                window.cachedUsersNames[targetPhone] = targetData.name || targetPhone; window.cachedUsersDPs[targetPhone] = targetData.dp || ""; totalCount++;
                 const userRow = document.createElement('div');
                 userRow.className = `flex items-center gap-3 p-3.5 hover:bg-panel-header border-b border-custom transition ${window.selectedTargetUser === targetPhone ? 'bg-input-field' : ''}`;
-                const printName = targetData.name || targetPhone;
-                const hasDP = targetData.dp || "";
-                const initialLetter = printName.substring(0, 1).toUpperCase();
-
+                const printName = targetData.name || targetPhone; const hasDP = targetData.dp || ""; const initialLetter = printName.substring(0, 1).toUpperCase();
                 let dynamicAvatarRow = hasDP ? `<div class="w-11 h-11 border border-field rounded-full shadow-md bg-cover bg-center" style="background-image: url('${hasDP}')"></div>` : 
                     `<div class="w-11 h-11 bg-panel-header border border-field rounded-full flex items-center justify-center text-base text-[#00a884] font-bold shadow-md uppercase">${initialLetter}</div>`;
-
-                let unreadCount = window.globalUnreadStore[targetPhone] || 0;
-                if(window.selectedTargetUser === targetPhone) unreadCount = 0;
-
+                let unreadCount = window.globalUnreadStore[targetPhone] || 0; if(window.selectedTargetUser === targetPhone) unreadCount = 0;
                 let badgeHtmlElementCode = "";
                 if(unreadCount > 0) {
                     let textDisplayLabel = unreadCount > 4 ? "4+" : unreadCount;
                     badgeHtmlElementCode = `<div class="whatsapp-green text-[#111b21] text-xs font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center animate-bounce shadow-md select-none mr-1">${textDisplayLabel}</div>`;
                 }
-
                 let deleteButtonHtml = "";
                 if (window.activeUserPhone === window.ADMIN_OWNER_NUMBER) {
-                    deleteButtonHtml = `
-                        <button onclick="deleteUserContactPermanently('${targetPhone}', event)" class="text-red-500 hover:text-red-700 ml-2 p-2 text-sm transition transform active:scale-90">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>`;
+                    deleteButtonHtml = `<button onclick="deleteUserContactPermanently('${targetPhone}', event)" class="text-red-500 hover:text-red-700 ml-2 p-2 text-sm transition transform active:scale-90"><i class="fa-solid fa-trash"></i></button>`;
                 }
-
                 userRow.innerHTML = `
                     ${dynamicAvatarRow}
                     <div class="flex-1 min-w-0" onclick="window.openTargetChatWindow('${targetPhone}')">
@@ -1085,10 +965,8 @@
                         <p class="text-xs text-sub truncate mt-0.5">${targetPhone}</p>
                     </div>
                     <div class="flex-shrink-0 flex items-center">
-                        ${badgeHtmlElementCode}
-                        ${deleteButtonHtml}
+                        ${badgeHtmlElementCode} ${deleteButtonHtml}
                     </div>`;
-
                 listContainer.appendChild(userRow);
             });
             if(totalCount === 0) listContainer.innerHTML = `<div class="p-6 text-center text-sm text-sub">No active logs.</div>`;
@@ -1096,28 +974,19 @@
 
         function triggerTabBlink(senderName) {
             if (document.hidden) {
-                clearInterval(blinkInterval);
-                let isMine = false;
-                blinkInterval = setInterval(() => {
-                    document.title = isMine ? `New Message` : `Notification`;
-                    isMine = !isMine;
-                }, 1000);
+                clearInterval(blinkInterval); let isMine = false;
+                blinkInterval = setInterval(() => { document.title = isMine ? `New Message` : `Notification`; isMine = !isMine; }, 1000);
             }
         }
         window.addEventListener('focus', () => { clearInterval(blinkInterval); document.title = originalTitle; });
 
         function processAndSendPhoto(inputElement) {
-            const file = inputElement.files[0];
-            if (!file || !window.selectedTargetUser) return;
+            const file = inputElement.files[0]; if (!file || !window.selectedTargetUser) return;
             compressAndProcessImage(file, 1000, 1000, 0.6, async function(compressedUrl) {
                 try {
                     await addDoc(collection(db, "whatsapp_chats"), {
-                        sender: window.activeUserPhone,
-                        receiver: window.selectedTargetUser,
-                        message: compressedUrl, 
-                        type: "image",
-                        timestamp: serverTimestamp(),
-                        createdAtMillis: Date.now()
+                        sender: window.activeUserPhone, receiver: window.selectedTargetUser, message: compressedUrl, 
+                        type: "image", timestamp: serverTimestamp(), createdAtMillis: Date.now()
                     });
                 } catch(err) { console.log(err); }
             });
@@ -1128,34 +997,37 @@
             globalUnsubscribe = onSnapshot(chatQuery, (snapshot) => {
                 const msgBox = document.getElementById('messages-box');
                 msgBox.innerHTML = "";
-                let currentValidMessagesCount = 0;
-                let lastSenderPhone = "";
+                let currentValidMessagesCount = 0; let lastSenderPhone = "";
+                // Local tracking list load
+                let hiddenList = JSON.parse(localStorage.getItem('kausar_deleted_for_me') || '[]');
 
                 snapshot.forEach((messageDoc) => {
                     const data = messageDoc.data();
                     const msgId = messageDoc.id;
 
+                    // FILTER: If hidden local state found, skip rendering this message block
+                    if (hiddenList.includes(msgId)) return;
+
                     if ((data.sender === window.activeUserPhone && data.receiver === window.selectedTargetUser) ||
                         (data.sender === window.selectedTargetUser && data.receiver === window.activeUserPhone)) {
                         
-                        currentValidMessagesCount++;
-                        lastSenderPhone = data.sender;
+                        currentValidMessagesCount++; lastSenderPhone = data.sender;
                         const isCurrentUserMe = (data.sender === window.activeUserPhone);
                         const msgWrapper = document.createElement('div');
                         msgWrapper.className = `flex w-full mb-1 group ${isCurrentUserMe ? 'justify-end' : 'justify-start'}`;
                         
                         let chatBubbleContent = "";
                         if (data.type === "image" || data.message.startsWith("data:image/")) {
-                            // CHANGED: Fixed raw blank tab crash bug, targets window custom layout preview modal now
                             chatBubbleContent = `<img src="${data.message}" class="rounded-md max-w-full max-h-[250px] object-cover block mt-1 cursor-pointer hover:brightness-90 transition" onclick="window.openInAppImageViewer('${data.message}')">`;
                         } else {
                             chatBubbleContent = `<p class="text-[14.5px] break-words">${data.message}</p>`;
                         }
 
+                        // CHANGED: Trash Icon targets openDeleteOptionsModal now instead of direct purge
                         msgWrapper.innerHTML = `
                             <div class="max-w-[85%] md:max-w-[60%] rounded-lg pt-1.5 pb-5 pl-3 pr-8 shadow-sm relative min-w-[90px] ${isCurrentUserMe ? 'bg-[#005c4b] text-white rounded-tr-none' : 'chat-bubble-recv rounded-tl-none'}">
                                 ${chatBubbleContent}
-                                <button onclick="window.deleteMessagePermanently('${msgId}')" class="absolute top-1 right-1.5 text-xs text-sub opacity-0 group-hover:opacity-100 transition duration-150"><i class="fa-regular fa-trash-can"></i></button>
+                                <button onclick="window.openDeleteOptionsModal('${msgId}')" class="absolute top-1 right-1.5 text-xs text-sub opacity-0 group-hover:opacity-100 transition duration-150"><i class="fa-regular fa-trash-can"></i></button>
                                 <span class="text-[9.5px] text-sub absolute bottom-0.5 right-2 flex items-center gap-0.5">
                                     ${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...'}
                                     ${isCurrentUserMe ? '<i class="fa-solid fa-check-double text-[#53bdeb] text-[9px]"></i>' : ''}
@@ -1166,12 +1038,9 @@
                 });
 
                 if (lastMessageCount > 0 && currentValidMessagesCount > lastMessageCount) {
-                    if (lastSenderPhone !== window.activeUserPhone) {
-                        triggerTabBlink(window.cachedUsersNames[lastSenderPhone] || "Someone");
-                    }
+                    if (lastSenderPhone !== window.activeUserPhone) { triggerTabBlink(window.cachedUsersNames[lastSenderPhone] || "Someone"); }
                 }
-                lastMessageCount = currentValidMessagesCount;
-                msgBox.scrollTop = msgBox.scrollHeight;
+                lastMessageCount = currentValidMessagesCount; msgBox.scrollTop = msgBox.scrollHeight;
             });
         }
 
@@ -1182,16 +1051,11 @@
             inputField.value = "";
             try {
                 await addDoc(collection(db, "whatsapp_chats"), {
-                    sender: window.activeUserPhone,
-                    receiver: window.selectedTargetUser,
-                    message: messageTxt,
-                    type: "text",
-                    timestamp: serverTimestamp(),
-                    createdAtMillis: Date.now()
+                    sender: window.activeUserPhone, receiver: window.selectedTargetUser, message: messageTxt,
+                    type: "text", timestamp: serverTimestamp(), createdAtMillis: Date.now()
                 });
                 let checkpoints = JSON.parse(localStorage.getItem('kausar_read_checkpoints') || '{}');
-                checkpoints[window.selectedTargetUser] = Date.now();
-                localStorage.setItem('kausar_read_checkpoints', JSON.stringify(checkpoints));
+                checkpoints[window.selectedTargetUser] = Date.now(); localStorage.setItem('kausar_read_checkpoints', JSON.stringify(checkpoints));
                 listenToAllIncomingUnreadMessages();
             } catch(e) { console.log(e); }
         }
