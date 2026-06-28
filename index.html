@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kausar Private Hub</title>
     
-    <!-- WEB APP MANIFEST FOR PWA INSTALLATION (UPDATED WITH BADGE SUPPORT) -->
     <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Kausar%20Private%20Hub%22%2C%22short_name%22%3A%22KausarHub%22%2C%22start_url%22%3A%22.%2Findex.html%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23111b21%22%2C%22theme_color%22%3A%22%2300a884%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F733%2F733585.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
     <meta name="theme-color" content="#00a884">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -113,7 +112,6 @@
 </head>
 <body class="dark-mode dynamic-height flex items-center justify-center overflow-hidden fixed inset-0">
 
-    <!-- REAL SPLASH LOADING SCREEN -->
     <div id="app-splash-screen" class="fixed inset-0 bg-[#111b21] z-[100] flex flex-col items-center justify-center select-none">
         <div class="flex flex-col items-center animate-pulse">
             <svg class="king-logo-svg mb-4" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -131,7 +129,6 @@
         </div>
     </div>
 
-    <!-- GAJAB IN-APP IMAGE PREVIEW MODAL -->
     <div id="image-viewer-modal" class="hidden fixed inset-0 bg-black/90 z-[120] flex flex-col justify-between p-4 transition-all duration-300">
         <div class="w-full flex justify-between items-center z-50 bg-gradient-to-b from-black/60 to-transparent p-2 absolute top-0 left-0">
             <button id="btn-download-viewed-image" class="bg-[#00a884] hover:bg-[#008f72] text-[#111b21] font-bold text-sm py-2 px-4 rounded-lg flex items-center gap-2 transition shadow-md m-2">
@@ -146,7 +143,6 @@
         </div>
     </div>
 
-    <!-- CUSTOM TWO-OPTION DELETE DIALOG POPUP (DELETE FOR ME / EVERYONE) -->
     <div id="custom-delete-popup-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[110] p-4 animate-fade-in">
         <div class="bg-[#222e35] border border-[#374248] w-full max-w-xs rounded-xl p-5 shadow-2xl text-center">
             <h4 class="text-white font-bold text-base mb-4 flex items-center justify-center gap-2">
@@ -166,7 +162,6 @@
         </div>
     </div>
 
-    <!-- APP INSTALL PROMPT BUTTON -->
     <div id="pwa-install-banner" class="hidden fixed bottom-4 left-4 right-4 bg-[#202c33] border border-[#00a884] p-3 rounded-lg z-50 flex items-center justify-between text-white shadow-2xl">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-mobile-screen-button text-[#00a884] text-xl"></i>
@@ -178,7 +173,6 @@
         <button id="btn-pwa-install" class="whatsapp-green hover:bg-[#008f72] text-[#111b21] font-bold py-1.5 px-3 rounded text-xs transition">Install</button>
     </div>
 
-    <!-- LOG IN CONTAINER -->
     <div id="auth-container" class="w-full max-w-md p-6 bg-[#222e35] rounded-lg shadow-2xl border border-[#374248] z-10 m-4">
         <div class="text-center mb-6">
             <div class="flex items-center justify-center mb-2">
@@ -213,7 +207,6 @@
         </div>
     </div>
 
-    <!-- PROFILE SETUP POPUP -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
         <div class="bg-[#222e35] border border-[#374248] w-full max-w-sm rounded-xl p-6 shadow-2xl">
             <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
@@ -227,7 +220,6 @@
         </div>
     </div>
 
-    <!-- EDIT PROFILE & ADVANCED THEME MODAL -->
     <div id="edit-profile-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
         <div class="bg-[#222e35] border border-[#374248] w-full max-w-md rounded-xl p-6 shadow-2xl relative text-white max-h-[90vh] overflow-y-auto">
             <button id="btn-close-profile-modal" class="absolute top-4 right-4 text-[#8696a0] hover:text-white text-lg">
@@ -296,7 +288,6 @@
         </div>
     </div>
 
-    <!-- STATUS VIEWER OVERLAY -->
     <div id="status-viewer-modal" class="hidden fixed inset-0 bg-black z-50 flex flex-col justify-between">
         <div class="absolute top-2 left-2 right-2 flex gap-1 z-20">
             <div id="status-progress-bar" class="h-1 bg-[#00a884] w-0 transition-all duration-[5000ms] linear rounded"></div>
@@ -316,10 +307,8 @@
         <div id="status-media-content-holder" class="w-full h-full flex items-center justify-center p-2 bg-black select-none"></div>
     </div>
 
-    <!-- MAIN INTERFACE -->
     <div id="chat-container" class="hidden w-full h-full flex z-10 overflow-hidden">
         
-        <!-- SIDEBAR PANEL -->
         <div id="sidebar-panel" class="w-full md:w-[35%] bg-sidebar border-r border-custom flex flex-col h-full z-20">
             <div class="bg-panel-header h-[60px] p-4 flex items-center justify-between shadow-sm flex-shrink-0">
                 <div class="flex items-center gap-3 cursor-pointer p-1 rounded hover:bg-input-field transition flex-1 min-w-0" id="my-profile-header-trigger">
@@ -336,7 +325,6 @@
                 </button>
             </div>
 
-            <!-- TABS -->
             <div class="flex bg-panel-header border-b border-custom text-center text-sm font-semibold select-none flex-shrink-0">
                 <button id="tab-chats-btn" class="flex-1 py-3 text-[#00a884] border-b-2 border-[#00a884] uppercase tracking-wide transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-message"></i> Chats
@@ -346,7 +334,6 @@
                 </button>
             </div>
             
-            <!-- CHATS TAB -->
             <div id="chats-tab-content" class="flex flex-1 flex-col overflow-hidden">
                 <div class="p-2.5 bg-sidebar flex-shrink-0">
                     <span class="text-[11px] font-bold tracking-wider text-sub uppercase block pl-1">Active Chat Logs</span>
@@ -356,7 +343,6 @@
                 </div>
             </div>
 
-            <!-- STATUS TAB -->
             <div id="status-tab-content" class="hidden flex-1 flex-col overflow-hidden">
                 <div class="p-4 flex items-center justify-between border-b border-custom bg-panel-header/30">
                     <div class="flex items-center gap-3">
@@ -383,7 +369,6 @@
             </div>
         </div>
 
-        <!-- CHAT PANEL -->
         <div id="chat-panel" class="hidden md:flex flex-1 flex-col h-full bg-chat-area relative z-10 overflow-hidden">
             <div class="chat-bg" id="chat-wallpaper-canvas"></div>
             
@@ -444,11 +429,9 @@
         window.pendingDeleteMessageId = ""; 
     </script>
 
-    <!-- FIREBASE LOGIC WITH REAL-TIME FCM ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, deleteDoc, updateDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyAHazZpA2srlEclDKE0qWrDuj7-ULVWnLg",
@@ -461,7 +444,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const messaging = getMessaging(app);
 
         let globalUnsubscribe = null;
         let lastMessageCount = 0; 
@@ -473,36 +455,6 @@
         let processedMessageIds = new Set();
         let isInitialLoadUnread = true;
 
-        // FCM PUSH ENGINE TOKEN LOGGER
-        async function initFcmTokenLogger() {
-            try {
-                const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    // FCM Token registration using your generated VAPID key
-                    const currentToken = await getToken(messaging, { 
-                        vapidKey: 'BFA1EVPK6IsJx9_7tPIWdHj2w4OYZeBGmOIXy9CFKR45i1-oMZHteOk3fDpbmh4lDG6fotfJ7_FJaWthY3m87a8' 
-                    });
-                    
-                    if (currentToken) {
-                        // User phone entry map token push updates
-                        await updateDoc(doc(db, "registered_users", window.activeUserPhone), {
-                            fcmToken: currentToken
-                        });
-                        console.log("FCM Background Token Lock Active!");
-                    }
-                }
-            } catch (err) {
-                console.log("FCM Setup skip or fallback:", err);
-            }
-        }
-
-        // FOREGROUND MESSAGE LISTENER THROUGH FCM DIRECTLY
-        onMessage(messaging, (payload) => {
-            console.log('Foreground Push Alert Recv: ', payload);
-            msgSound.play().catch(e => console.log(e));
-        });
-
-        // IN-APP IMAGE VIEWER
         window.openInAppImageViewer = function(base64Src) {
             const modal = document.getElementById('image-viewer-modal');
             const imgTarget = document.getElementById('image-viewer-main-src');
@@ -526,7 +478,6 @@
             document.body.removeChild(downloadLink);
         });
 
-        // PERMANENT CONTACT DELETE FUNCTION (ADMIN ONLY)
         window.deleteUserContactPermanently = async function(phoneToDelete, event) {
             event.stopPropagation(); 
             if(confirm(`Kya aap contact ${phoneToDelete} ko server se permanently delete karna chahte hain?`)) {
@@ -539,19 +490,16 @@
             }
         };
 
-        // CUSTOM DIALOG FOR MESSAGES: DELETE FOR ME & DELETE FOR EVERYONE
         window.openDeleteOptionsModal = function(msgId) {
             window.pendingDeleteMessageId = msgId;
             document.getElementById('custom-delete-popup-modal').classList.remove('hidden');
         };
 
-        // CLOSE DELETE MODAL
         document.getElementById('btn-cancel-delete-popup').addEventListener('click', () => {
             document.getElementById('custom-delete-popup-modal').classList.add('hidden');
             window.pendingDeleteMessageId = "";
         });
 
-        // LOGIC 1: DELETE FOR ME (Local Storage tracking)
         document.getElementById('btn-delete-for-me').addEventListener('click', () => {
             if (!window.pendingDeleteMessageId) return;
             let hiddenList = JSON.parse(localStorage.getItem('kausar_deleted_for_me') || '[]');
@@ -564,7 +512,6 @@
             if(window.selectedTargetUser) streamPrivateMessagesBetweenUsers();
         });
 
-        // LOGIC 2: DELETE FOR EVERYONE (Firebase Cloud server clean)
         document.getElementById('btn-delete-for-everyone').addEventListener('click', async () => {
             if (!window.pendingDeleteMessageId) return;
             try {
@@ -576,7 +523,6 @@
             window.pendingDeleteMessageId = "";
         });
 
-        // PWA APP INSTALL LOGIC
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -618,7 +564,7 @@
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log("Service Worker Connected!"))
+            .then(() => console.log("Chat Service Worker Connected!"))
             .catch(err => console.log("SW Error:", err));
         }
 
@@ -878,7 +824,7 @@
                         const snap1 = await getDocs(q1); const snap2 = await getDocs(q2);
                         snap1.forEach(async (messageDoc) => { await deleteDoc(doc(db, "whatsapp_chats", messageDoc.id)); });
                         snap2.forEach(async (messageDoc) => { await deleteDoc(doc(db, "whatsapp_chats", messageDoc.id)); });
-                        alert("Puri chat server se delete ho gayi!");
+                        alert("Puri chat server aur dono mobile se permanently delete ho gayi!");
                     } catch(err) { alert("Chat clear karne me error aaya."); }
                 }
             });
@@ -994,7 +940,6 @@
 
         function startPrivateSystem() {
             document.getElementById('auth-container').classList.add('hidden'); document.getElementById('chat-container').classList.remove('hidden');
-            initFcmTokenLogger(); // Initializes FCM Push Engine token register
             listenToAllIncomingUnreadMessages(); syncConnectedUsersList();
         }
 
