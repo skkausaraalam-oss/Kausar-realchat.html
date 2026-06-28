@@ -1,42 +1,52 @@
-importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
+// SW.JS - KAUSAR PRIVATE HUB LIGHTWEIGHT BACKGROUND ENGINE
 
-firebase.initializeApp({
-  apiKey: "AIzaSyAHazZpA2srlEclDKE0qWrDuj7-ULVWnLg",
-  authDomain: "kausar-chat-hub.firebaseapp.com",
-  projectId: "kausar-chat-hub",
-  storageBucket: "kausar-chat-hub.firebasestorage.app",
-  messagingSenderId: "543766591580",
-  appId: "1:543766591580:web:fbbcdd538d3c403e5bce99"
+const CACHE_NAME = 'kausar-hub-v1';
+const ASSETS_TO_CACHE = [
+  './index.html',
+  'https://cdn.tailwindcss.com',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'https://assets.mixkit.co/active_storage/sfx/2357/2357-84.wav'
+];
+
+// Install Event - Caching basic layout
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    }).then(() => self.skipWaiting())
+  );
 });
 
-const messaging = firebase.messaging();
-
-// Background Message Handler when Mobile is Locked/Closed
-messaging.onBackgroundMessage((payload) => {
-  console.log('Background Sync Received payload: ', payload);
-
-  const notificationTitle = payload.notification.title || 'Kausar Private Hub';
-  const notificationOptions = {
-    body: payload.notification.body || 'New private message received!',
-    icon: 'https://cdn-icons-png.flaticon.com/512/733/733585.png',
-    badge: 'https://cdn-icons-png.flaticon.com/512/733/733585.png',
-    tag: 'kausar-chat-sync',
-    renotify: true
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
+// Activate Event
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
 });
 
-// App Badge Event Sync Tracker
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SYNC_BADGE_COUNT') {
-     if ('setAppBadge' in self.navigator) {
-       if(event.data.count > 0) {
-           self.navigator.setAppBadge(event.data.count);
-       } else {
-           self.navigator.clearAppBadge();
-       }
-     }
+// Fetch Event - Dynamic Off-line support
+self.addEventListener('fetch', (event) => {
+  if (event.request.url.startsWith('http')) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) return cachedResponse;
+        return fetch(event.request).catch(() => {
+          return caches.match('./index.html');
+        });
+      })
+    );
   }
 });
+
+// App Icon Badge Dynamic Syncer Engine
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SYNC_BADGE_COUNT') {
+    const badgeCount = event.data.count;
+    if (navigator.setAppBadge) {
+      if (badgeCount > 0) {
+        navigator.setAppBadge(badgeCount).catch(err => console.log(err));
+      } else {
+        navigator.clearAppBadge().catch(err => console.log(err));
+      }
+    }
+  }
+});
+      
